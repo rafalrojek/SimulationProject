@@ -19,9 +19,7 @@ public class GUIFederate extends Federate {
     //----------------------------------------------------------
 
     @Override
-    protected void setAmbassador() {
-        fedamb = new GUIAmbassador(this);
-    }
+    protected void setAmbassador() { fedamb = new GUIAmbassador(this); }
 
     @Override
     protected void runFederateLogic() {

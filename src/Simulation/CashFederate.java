@@ -18,11 +18,8 @@ public class CashFederate extends Federate {
     //----------------------------------------------------------
     //                    INSTANCE METHODS
     //----------------------------------------------------------
-
     @Override
-    protected void setAmbassador() {
-        fedamb = new CashAmbassador(this);
-    }
+    protected void setAmbassador() { fedamb = new CashAmbassador(this); }
 
     @Override
     protected void runFederateLogic() {

@@ -19,9 +19,7 @@ public class CarGeneratorFederate extends Federate {
     //----------------------------------------------------------
 
     @Override
-    protected void setAmbassador() {
-        fedamb = new CarGeneratorAmbassador(this);
-    }
+    protected void setAmbassador() { fedamb = new CarGeneratorAmbassador(this); }
 
     @Override
     protected void runFederateLogic() {

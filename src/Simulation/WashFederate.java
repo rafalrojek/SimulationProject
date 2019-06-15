@@ -20,9 +20,7 @@ public class WashFederate extends Federate {
     //----------------------------------------------------------
 
     @Override
-    protected void setAmbassador() {
-        fedamb = new WashAmbassador(this);
-    }
+    protected void setAmbassador() { fedamb = new WashAmbassador(this); }
 
     @Override
     protected void runFederateLogic() {

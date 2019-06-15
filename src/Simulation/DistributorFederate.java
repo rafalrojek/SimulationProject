@@ -20,9 +20,7 @@ public class DistributorFederate extends Federate {
     //----------------------------------------------------------
 
     @Override
-    protected void setAmbassador() {
-        fedamb = new DistributorAmabasssador(this);
-    }
+    protected void setAmbassador() { fedamb = new DistributorAmabasssador(this); }
 
     @Override
     protected void runFederateLogic() {

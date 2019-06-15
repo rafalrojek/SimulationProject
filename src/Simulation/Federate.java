@@ -33,10 +33,7 @@ public abstract class Federate implements Runnable{
     /**
      * This is just a helper method to make sure all logging it output in the same form
      */
-    protected void log( String message )
-    {
-        System.out.println( "GUIFederate   : " + message );
-    }
+    protected void log( String message ) { System.out.println( "GUIFederate   : " + message ); }
 
     /**
      * This method will block until the user presses enter
@@ -46,8 +43,7 @@ public abstract class Federate implements Runnable{
         BufferedReader reader = new BufferedReader( new InputStreamReader(System.in) );
         try {
             reader.readLine();
-        }
-        catch( Exception e ) {
+        } catch( Exception e ) {
             log( "Error while waiting for user input: " + e.getMessage() );
             e.printStackTrace();
         }
@@ -96,10 +92,7 @@ public abstract class Federate implements Runnable{
         this.rtiamb.enableTimeConstrained();
 
         // tick until we get the callback
-        while( fedamb.isConstrained == false )
-        {
-            rtiamb.tick();
-        }
+        while(!fedamb.isConstrained) rtiamb.tick();
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -123,19 +116,15 @@ public abstract class Federate implements Runnable{
         // create
         // NOTE: some other federate may have already created the federation,
         //       in that case, we'll just try and join it
-        try
-        {
+        try {
             File fom = new File( "tramfom.fed" );
             rtiamb.createFederationExecution( federationName,
                     fom.toURI().toURL() );
             log( "Created Federation" );
         }
-        catch( FederationExecutionAlreadyExists exists )
-        {
+        catch( FederationExecutionAlreadyExists exists ) {
             log( "Didn't create federation, it already existed" );
-        }
-        catch( MalformedURLException urle )
-        {
+        } catch( MalformedURLException urle ) {
             log( "Exception processing fom: " + urle.getMessage() );
             urle.printStackTrace();
             return;
@@ -145,7 +134,7 @@ public abstract class Federate implements Runnable{
         // 3. join the federation //
         ////////////////////////////
         // create the federate ambassador and join the federation
-setAmbassador();
+        setAmbassador();
         rtiamb.joinFederationExecution( name, federationName, fedamb );
         log( "Joined Federation as " + name );
 
@@ -157,10 +146,7 @@ setAmbassador();
         // but we don't care about that, as long as someone registered it
         rtiamb.registerFederationSynchronizationPoint( READY_TO_RUN, null );
         // wait until the point is announced
-        while( fedamb.isAnnounced == false )
-        {
-            rtiamb.tick();
-        }
+        while(!fedamb.isAnnounced) rtiamb.tick();
 
         // WAIT FOR USER TO KICK US OFF
         // So that there is time to add other federates, we will wait until the
@@ -175,10 +161,7 @@ setAmbassador();
         // until the federation has synchronized on
         rtiamb.synchronizationPointAchieved( READY_TO_RUN );
         log( "Achieved sync point: " +READY_TO_RUN+ ", waiting for federation..." );
-        while( fedamb.isReadyToRun == false )
-        {
-            rtiamb.tick();
-        }
+        while(!fedamb.isReadyToRun) rtiamb.tick();
 
         /////////////////////////////
         // 6. enable time policies //
@@ -208,7 +191,6 @@ setAmbassador();
         try {
             Thread.sleep(20000);
         } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         ////////////////////////////////////////
@@ -216,17 +198,13 @@ setAmbassador();
         ////////////////////////////////////////
         // NOTE: we won't die if we can't do this because other federates
         //       remain. in that case we'll leave it for them to clean up
-        try
-        {
+        try {
             rtiamb.destroyFederationExecution( federationName );
             log( "Destroyed Federation" );
         }
-        catch( FederationExecutionDoesNotExist dne )
-        {
+        catch( FederationExecutionDoesNotExist dne ) {
             log( "No need to destroy federation, it doesn't exist" );
-        }
-        catch( FederatesCurrentlyJoined fcj )
-        {
+        } catch( FederatesCurrentlyJoined fcj ) {
             log( "Didn't destroy federation, federates still joined" );
         }
     }
@@ -249,8 +227,7 @@ setAmbassador();
         return (""+System.currentTimeMillis()).getBytes();
     }
 
-    protected void advanceTime( double timestep ) throws RTIexception
-    {
+    protected void advanceTime( double timestep ) throws RTIexception {
         // request the advance
         fedamb.isAdvancing = true;
         LogicalTime newTime = convertTime( fedamb.federateTime + timestep );
@@ -258,10 +235,7 @@ setAmbassador();
 
         // wait for the time advance to be granted. ticking will tell the
         // LRC to start delivering callbacks to the federate
-        while( fedamb.isAdvancing )
-        {
-            rtiamb.tick();
-        }
+        while( fedamb.isAdvancing ) rtiamb.tick();
     }
 
     @Override
@@ -269,10 +243,7 @@ setAmbassador();
     {
         try {
             runFederate();
-        }
-        catch (RTIexception e)
-        {
-            // TODO Auto-generated catch block
+        } catch (RTIexception e) {
             e.printStackTrace();
         }
     }

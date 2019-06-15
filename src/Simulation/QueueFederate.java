@@ -20,9 +20,7 @@ public class QueueFederate extends Federate  {
     //----------------------------------------------------------
 
     @Override
-    protected void setAmbassador() {
-        fedamb = new QueueAmbassador(this);
-    }
+    protected void setAmbassador() { fedamb = new QueueAmbassador(this); }
 
     @Override
     protected void runFederateLogic() {
