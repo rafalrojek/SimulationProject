@@ -61,7 +61,7 @@ public class CarGeneratorFederate extends Federate {
         return car;
     }
 
-    private void sendInteraction(Car car) throws RTIexception //typ interakcji (Arrival,Departue), typ obiektu (Station, Passing), id tramwaju i id stacji/mijanki
+    private void sendInteraction(Car car) throws RTIexception
     {
         SuppliedParameters parameters =
                 RtiFactoryFactory.getRtiFactory().createSuppliedParameters();
@@ -70,7 +70,7 @@ public class CarGeneratorFederate extends Federate {
         byte[] tanks = EncodingHelpers.encodeString( (car.getTanks()));
         byte[] wash = EncodingHelpers.encodeString( (car.isWashing() + ""));
 
-        int classHandle = rtiamb.getInteractionClassHandle("InteractionRoot." + Interaction.NEW_CAR_APPEARED);
+        int classHandle = rtiamb.getInteractionClassHandle(Interaction.NEW_CAR_APPEARED);
         int idCarHandle = rtiamb.getParameterHandle( "idCar", classHandle );
         int idTanksHandle = rtiamb.getParameterHandle( "tanks", classHandle );
         int idWashHandle = rtiamb.getParameterHandle( "washing", classHandle );

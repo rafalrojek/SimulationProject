@@ -118,7 +118,7 @@ public abstract class Federate implements Runnable{
         // NOTE: some other federate may have already created the federation,
         //       in that case, we'll just try and join it
         try {
-            File fom = new File( "tramfom.fed" );
+            File fom = new File( "fom" );
             rtiamb.createFederationExecution( federationName,
                     fom.toURI().toURL() );
             log( "Created Federation" );

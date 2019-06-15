@@ -1,0 +1,70 @@
+ERROR [Thread-0] portico.lrc: Fed file doesn't exist: file=file:/D:/Informatyka/SemestrVIII/MSK/projekt/java/SimulationProject/tramfom.fed
+org.portico.lrc.compat.JCouldNotOpenFED: Fed file doesn't exist: file=file:/D:/Informatyka/SemestrVIII/MSK/projekt/java/SimulationProject/tramfom.fed
+	at org.portico.lrc.services.federation.handlers.outgoing.CreateFederationHandler.parseFed(CreateFederationHandler.java:111)
+	at org.portico.lrc.services.federation.handlers.outgoing.CreateFederationHandler.process(CreateFederationHandler.java:66)
+	at org.portico.utils.messaging.MessageSink.process(MessageSink.java:187)
+	at org.portico.impl.hla13.Impl13Helper.processMessage(Impl13Helper.java:123)
+	at org.portico.impl.hla13.Rti13Ambassador.processMessage(Rti13Ambassador.java:5822)
+	at org.portico.impl.hla13.Rti13Ambassador.createFederationExecution(Rti13Ambassador.java:194)
+	at Simulation.Federate.runFederate(Federate.java:122)
+	at Simulation.Federate.run(Federate.java:246)
+	at java.lang.Thread.run(Thread.java:748)
+Caused by: org.portico.lrc.compat.JCouldNotOpenFED: Fed file doesn't exist: file=file:/D:/Informatyka/SemestrVIII/MSK/projekt/java/SimulationProject/tramfom.fed
+	at org.portico.lrc.services.federation.handlers.outgoing.CreateFederationHandler.parseFed(CreateFederationHandler.java:105)
+	... 8 more
+ERROR [Thread-1] portico.lrc: Fed file doesn't exist: file=file:/D:/Informatyka/SemestrVIII/MSK/projekt/java/SimulationProject/tramfom.fed
+org.portico.lrc.compat.JCouldNotOpenFED: Fed file doesn't exist: file=file:/D:/Informatyka/SemestrVIII/MSK/projekt/java/SimulationProject/tramfom.fed
+	at org.portico.lrc.services.federation.handlers.outgoing.CreateFederationHandler.parseFed(CreateFederationHandler.java:111)
+	at org.portico.lrc.services.federation.handlers.outgoing.CreateFederationHandler.process(CreateFederationHandler.java:66)
+	at org.portico.utils.messaging.MessageSink.process(MessageSink.java:187)
+	at org.portico.impl.hla13.Impl13Helper.processMessage(Impl13Helper.java:123)
+	at org.portico.impl.hla13.Rti13Ambassador.processMessage(Rti13Ambassador.java:5822)
+	at org.portico.impl.hla13.Rti13Ambassador.createFederationExecution(Rti13Ambassador.java:194)
+	at Simulation.Federate.runFederate(Federate.java:122)
+	at Simulation.Federate.run(Federate.java:246)
+	at java.lang.Thread.run(Thread.java:748)
+Caused by: org.portico.lrc.compat.JCouldNotOpenFED: Fed file doesn't exist: file=file:/D:/Informatyka/SemestrVIII/MSK/projekt/java/SimulationProject/tramfom.fed
+	at org.portico.lrc.services.federation.handlers.outgoing.CreateFederationHandler.parseFed(CreateFederationHandler.java:105)
+	... 8 more
+ERROR [Thread-2] portico.lrc: Fed file doesn't exist: file=file:/D:/Informatyka/SemestrVIII/MSK/projekt/java/SimulationProject/tramfom.fed
+org.portico.lrc.compat.JCouldNotOpenFED: Fed file doesn't exist: file=file:/D:/Informatyka/SemestrVIII/MSK/projekt/java/SimulationProject/tramfom.fed
+	at org.portico.lrc.services.federation.handlers.outgoing.CreateFederationHandler.parseFed(CreateFederationHandler.java:111)
+	at org.portico.lrc.services.federation.handlers.outgoing.CreateFederationHandler.process(CreateFederationHandler.java:66)
+	at org.portico.utils.messaging.MessageSink.process(MessageSink.java:187)
+	at org.portico.impl.hla13.Impl13Helper.processMessage(Impl13Helper.java:123)
+	at org.portico.impl.hla13.Rti13Ambassador.processMessage(Rti13Ambassador.java:5822)
+	at org.portico.impl.hla13.Rti13Ambassador.createFederationExecution(Rti13Ambassador.java:194)
+	at Simulation.Federate.runFederate(Federate.java:122)
+	at Simulation.Federate.run(Federate.java:246)
+	at java.lang.Thread.run(Thread.java:748)
+Caused by: org.portico.lrc.compat.JCouldNotOpenFED: Fed file doesn't exist: file=file:/D:/Informatyka/SemestrVIII/MSK/projekt/java/SimulationProject/tramfom.fed
+	at org.portico.lrc.services.federation.handlers.outgoing.CreateFederationHandler.parseFed(CreateFederationHandler.java:105)
+	... 8 more
+ERROR [Thread-4] portico.lrc: Fed file doesn't exist: file=file:/D:/Informatyka/SemestrVIII/MSK/projekt/java/SimulationProject/tramfom.fed
+org.portico.lrc.compat.JCouldNotOpenFED: Fed file doesn't exist: file=file:/D:/Informatyka/SemestrVIII/MSK/projekt/java/SimulationProject/tramfom.fed
+	at org.portico.lrc.services.federation.handlers.outgoing.CreateFederationHandler.parseFed(CreateFederationHandler.java:111)
+	at org.portico.lrc.services.federation.handlers.outgoing.CreateFederationHandler.process(CreateFederationHandler.java:66)
+	at org.portico.utils.messaging.MessageSink.process(MessageSink.java:187)
+	at org.portico.impl.hla13.Impl13Helper.processMessage(Impl13Helper.java:123)
+	at org.portico.impl.hla13.Rti13Ambassador.processMessage(Rti13Ambassador.java:5822)
+	at org.portico.impl.hla13.Rti13Ambassador.createFederationExecution(Rti13Ambassador.java:194)
+	at Simulation.Federate.runFederate(Federate.java:122)
+	at Simulation.Federate.run(Federate.java:246)
+	at java.lang.Thread.run(Thread.java:748)
+Caused by: org.portico.lrc.compat.JCouldNotOpenFED: Fed file doesn't exist: file=file:/D:/Informatyka/SemestrVIII/MSK/projekt/java/SimulationProject/tramfom.fed
+	at org.portico.lrc.services.federation.handlers.outgoing.CreateFederationHandler.parseFed(CreateFederationHandler.java:105)
+	... 8 more
+ERROR [Thread-3] portico.lrc: Fed file doesn't exist: file=file:/D:/Informatyka/SemestrVIII/MSK/projekt/java/SimulationProject/tramfom.fed
+org.portico.lrc.compat.JCouldNotOpenFED: Fed file doesn't exist: file=file:/D:/Informatyka/SemestrVIII/MSK/projekt/java/SimulationProject/tramfom.fed
+	at org.portico.lrc.services.federation.handlers.outgoing.CreateFederationHandler.parseFed(CreateFederationHandler.java:111)
+	at org.portico.lrc.services.federation.handlers.outgoing.CreateFederationHandler.process(CreateFederationHandler.java:66)
+	at org.portico.utils.messaging.MessageSink.process(MessageSink.java:187)
+	at org.portico.impl.hla13.Impl13Helper.processMessage(Impl13Helper.java:123)
+	at org.portico.impl.hla13.Rti13Ambassador.processMessage(Rti13Ambassador.java:5822)
+	at org.portico.impl.hla13.Rti13Ambassador.createFederationExecution(Rti13Ambassador.java:194)
+	at Simulation.Federate.runFederate(Federate.java:122)
+	at Simulation.Federate.run(Federate.java:246)
+	at java.lang.Thread.run(Thread.java:748)
+Caused by: org.portico.lrc.compat.JCouldNotOpenFED: Fed file doesn't exist: file=file:/D:/Informatyka/SemestrVIII/MSK/projekt/java/SimulationProject/tramfom.fed
+	at org.portico.lrc.services.federation.handlers.outgoing.CreateFederationHandler.parseFed(CreateFederationHandler.java:105)
+	... 8 more

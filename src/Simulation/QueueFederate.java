@@ -152,25 +152,6 @@ public class QueueFederate extends Federate  {
         rtiamb.sendInteraction(classHandle, parameters, generateTag(), time );
     }
 
-    /* CAR ATTRIBUTES
-    private int idCar;
-    private String tanks;
-    private boolean washing;
-    private int distributorId;
-    private int cashBox;
-     */
-
-    /* SUBSCRIBE
-    newCarAppeared
-    dispenserAvailable
-    pumpingEnded
-    cashBoxAvailable
-    paymentDone
-    carWashAvailable
-    carWashReleased
-
-     */
-
     public void newCarAppeared(int carId, String tanks, boolean washing) throws RTIexception {
         Car car = new Car();
         car.setIdCar(carId);
@@ -201,25 +182,29 @@ public class QueueFederate extends Federate  {
         if(!cashQueue.isEmpty()){
             Car car = distributorQueue.poll();
             car.setCashBox(cashId);
-            sendInteraction(car,Interaction.DISPENSER_AVAILABLE);
+            sendInteraction(car,Interaction.OCCUPY_CASH_BOX);
         }
     }
 
     public void paymentDone(int carId, int cashId, int distributorId, boolean washing) throws RTIexception {
-        Car car = new Car();
-        car.setIdCar(carId);
-        car.setCashBox(cashId);
-        car.setDistributorId(distributorId);
-        car.setWashing(washing);
         if(washing){
-
+            Car car = new Car();
+            car.setIdCar(carId);
+            car.setCashBox(cashId);
+            car.setDistributorId(distributorId);
+            car.setWashing(washing);
+            washQueue.add(car);
+            sendInteraction(car,Interaction.NEW_CAR_AT_CAR_WASH_QUEUE);
         }
         else{
-            sendInteraction(car,Interaction.LEAVE_SIMULATION);
+            //leaves simulation in GUI
         }
     }
 
     public void carWashAvailable() throws RTIexception {
-
+        if(!washQueue.isEmpty()){
+            Car car = distributorQueue.poll();
+            sendInteraction(car,Interaction.CAR_WASH_OCCUPIED);
+        }
     }
 }

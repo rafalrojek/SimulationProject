@@ -18,34 +18,33 @@ public class DistributorAmabasssador extends Ambassador {
     @Override
     public void receiveInteraction(int interactionClass, ReceivedInteraction theInteraction, byte[] tag, LogicalTime theTime, EventRetractionHandle eventRetractionHandle) {
         try {
+            DistributorFederate fed = (DistributorFederate) federate;
             String interactionName = federate.rtiamb.getInteractionClassName(interactionClass);
-            switch(interactionName) {
-                case Interaction.NEW_CAR_AT_DISPENSER_QUEUE : {
+            switch (interactionName) {
+                case Interaction.NEW_CAR_AT_DISPENSER_QUEUE: {
                     int idCar = Integer.parseInt(EncodingHelpers.decodeString(theInteraction.getValue(0)));
                     String oil = EncodingHelpers.decodeString(theInteraction.getValue(1));
                     boolean isWashing = Boolean.parseBoolean(EncodingHelpers.decodeString(theInteraction.getValue(2)));
-                    //TODO: Wywołanie metody
+                    fed.newCarAtDispenserQueue(idCar,oil,isWashing);
                 }
-                case Interaction.OCCUPY_DISPENSER : {
-                    int idCash = Integer.parseInt(EncodingHelpers.decodeString(theInteraction.getValue(0)));
+                case Interaction.OCCUPY_DISPENSER: {
+                    int idCar = Integer.parseInt(EncodingHelpers.decodeString(theInteraction.getValue(0)));
                     String oil = EncodingHelpers.decodeString(theInteraction.getValue(1));
                     boolean isWashing = Boolean.parseBoolean(EncodingHelpers.decodeString(theInteraction.getValue(2)));
                     int idDistributor = Integer.parseInt(EncodingHelpers.decodeString(theInteraction.getValue(3)));
-                    //TODO: Wywołanie metody
-
+                    fed.occupyDispenser(idCar, oil, isWashing, idDistributor);
                 }
-                case Interaction.PAYMENT_DONE : {
-                    int idCar = Integer.parseInt(EncodingHelpers.decodeString(theInteraction.getValue(0)));
-                    int idCash = Integer.parseInt(EncodingHelpers.decodeString(theInteraction.getValue(1)));
+                case Interaction.PAYMENT_DONE: {
+//                    int idCar = Integer.parseInt(EncodingHelpers.decodeString(theInteraction.getValue(0)));
+//                    int idCash = Integer.parseInt(EncodingHelpers.decodeString(theInteraction.getValue(1)));
                     int idDistributor = Integer.parseInt(EncodingHelpers.decodeString(theInteraction.getValue(2)));
-                    boolean isWashing = Boolean.parseBoolean(EncodingHelpers.decodeString(theInteraction.getValue(3)));
-                    //TODO: Wywołanie metody
-
+//                    boolean isWashing = Boolean.parseBoolean(EncodingHelpers.decodeString(theInteraction.getValue(3)));
+                    fed.paymentDone(idDistributor);
                 }
             }
 
-        } catch (InteractionClassNotDefined | RTIinternalError | FederateNotExecutionMember | ArrayIndexOutOfBounds interactionClassNotDefined) {
-            interactionClassNotDefined.printStackTrace();
+        } catch (RTIexception rtIexception) {
+            rtIexception.printStackTrace();
         }
     }
 }
