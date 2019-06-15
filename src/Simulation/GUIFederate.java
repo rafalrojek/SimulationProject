@@ -3,7 +3,7 @@ package Simulation;
 import hla.rti.RTIambassador;
 import hla.rti.RTIexception;
 
-public class GUIFederate extends Federate implements Runnable {
+public class GUIFederate extends Federate {
     //----------------------------------------------------------
     //                      CONSTRUCTORS
     //----------------------------------------------------------
@@ -18,22 +18,18 @@ public class GUIFederate extends Federate implements Runnable {
     //                    INSTANCE METHODS
     //----------------------------------------------------------
 
-
-    ///////////////////////////////////////////////////////////////////////////
-    ////////////////////////// Main Simulation Method /////////////////////////
-    ///////////////////////////////////////////////////////////////////////////
-
-    /**
-     * This is the main simulation loop. It can be thought of as the main method of
-     * the federate. For a description of the basic flow of this federate, see the
-     * class level comments
-     */
     @Override
-    public void runFederate() throws RTIexception {}
-
+    protected void setAmbassador() {
+        fedamb = new GUIAmbassador(this);
+    }
 
     @Override
-    public void run() {
+    protected void runFederateLogic() {
+
+    }
+
+    @Override
+    protected void publishAndSubscribe() throws RTIexception {
 
     }
 }

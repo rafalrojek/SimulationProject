@@ -5,9 +5,11 @@ import org.portico.impl.hla13.types.DoubleTime;
 import org.portico.impl.hla13.types.DoubleTimeInterval;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
 
-public abstract class Federate {
+public abstract class Federate implements Runnable{
     //----------------------------------------------------------
     //                    STATIC VARIABLES
     //----------------------------------------------------------
@@ -109,7 +111,129 @@ public abstract class Federate {
      * the federate. For a description of the basic flow of this federate, see the
      * class level comments
      */
-    public abstract void runFederate() throws RTIexception;
+    public void runFederate() throws RTIexception {
+        /////////////////////////////////
+        // 1. create the RTIambassador //
+        /////////////////////////////////
+        //rtiamb = RtiFactoryFactory.getRtiFactory().createRtiAmbassador();
+
+        //////////////////////////////
+        // 2. create the federation //
+        //////////////////////////////
+        // create
+        // NOTE: some other federate may have already created the federation,
+        //       in that case, we'll just try and join it
+        try
+        {
+            File fom = new File( "tramfom.fed" );
+            rtiamb.createFederationExecution( federationName,
+                    fom.toURI().toURL() );
+            log( "Created Federation" );
+        }
+        catch( FederationExecutionAlreadyExists exists )
+        {
+            log( "Didn't create federation, it already existed" );
+        }
+        catch( MalformedURLException urle )
+        {
+            log( "Exception processing fom: " + urle.getMessage() );
+            urle.printStackTrace();
+            return;
+        }
+
+        ////////////////////////////
+        // 3. join the federation //
+        ////////////////////////////
+        // create the federate ambassador and join the federation
+setAmbassador();
+        rtiamb.joinFederationExecution( name, federationName, fedamb );
+        log( "Joined Federation as " + name );
+
+        ////////////////////////////////
+        // 4. announce the sync point //
+        ////////////////////////////////
+        // announce a sync point to get everyone on the same page. if the point
+        // has already been registered, we'll get a callback saying it failed,
+        // but we don't care about that, as long as someone registered it
+        rtiamb.registerFederationSynchronizationPoint( READY_TO_RUN, null );
+        // wait until the point is announced
+        while( fedamb.isAnnounced == false )
+        {
+            rtiamb.tick();
+        }
+
+        // WAIT FOR USER TO KICK US OFF
+        // So that there is time to add other federates, we will wait until the
+        // user hits enter before proceeding. That was, you have time to start
+        // other federates.
+        waitForUser();
+
+        ///////////////////////////////////////////////////////
+        // 5. achieve the point and wait for synchronization //
+        ///////////////////////////////////////////////////////
+        // tell the RTI we are ready to move past the sync point and then wait
+        // until the federation has synchronized on
+        rtiamb.synchronizationPointAchieved( READY_TO_RUN );
+        log( "Achieved sync point: " +READY_TO_RUN+ ", waiting for federation..." );
+        while( fedamb.isReadyToRun == false )
+        {
+            rtiamb.tick();
+        }
+
+        /////////////////////////////
+        // 6. enable time policies //
+        /////////////////////////////
+        // in this section we enable/disable all time policies
+        // note that this step is optional!
+        enableTimePolicy();
+        log( "Time Policy Enabled" );
+
+        //////////////////////////////
+        // 7. publish and subscribe //
+        //////////////////////////////
+        // in this section we tell the RTI of all the data we are going to
+        // produce, and all the data we want to know about
+        publishAndSubscribe();
+        log( "Published and Subscribed" );
+
+        runFederateLogic();
+
+        ////////////////////////////////////
+        // 11. resign from the federation //
+        ////////////////////////////////////
+        rtiamb.resignFederationExecution( ResignAction.NO_ACTION );
+        log( "Resigned from Federation" );
+
+
+        try {
+            Thread.sleep(20000);
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        ////////////////////////////////////////
+        // 12. try and destroy the federation //
+        ////////////////////////////////////////
+        // NOTE: we won't die if we can't do this because other federates
+        //       remain. in that case we'll leave it for them to clean up
+        try
+        {
+            rtiamb.destroyFederationExecution( federationName );
+            log( "Destroyed Federation" );
+        }
+        catch( FederationExecutionDoesNotExist dne )
+        {
+            log( "No need to destroy federation, it doesn't exist" );
+        }
+        catch( FederatesCurrentlyJoined fcj )
+        {
+            log( "Didn't destroy federation, federates still joined" );
+        }
+    }
+
+    protected abstract void setAmbassador();
+    protected abstract void runFederateLogic();
+    protected abstract void publishAndSubscribe() throws RTIexception;
 
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////// Helper Methods //////////////////////////////
@@ -137,6 +261,19 @@ public abstract class Federate {
         while( fedamb.isAdvancing )
         {
             rtiamb.tick();
+        }
+    }
+
+    @Override
+    public void run()
+    {
+        try {
+            runFederate();
+        }
+        catch (RTIexception e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
     }
 

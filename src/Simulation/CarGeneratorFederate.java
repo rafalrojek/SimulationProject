@@ -2,7 +2,7 @@ package Simulation;
 import hla.rti.RTIambassador;
 import hla.rti.RTIexception;
 
-public class CarGeneratorFederate extends Federate implements Runnable {
+public class CarGeneratorFederate extends Federate {
 
     //----------------------------------------------------------
     //                      CONSTRUCTORS
@@ -18,20 +18,18 @@ public class CarGeneratorFederate extends Federate implements Runnable {
     //                    INSTANCE METHODS
     //----------------------------------------------------------
 
-
-    ///////////////////////////////////////////////////////////////////////////
-    ////////////////////////// Main Simulation Method /////////////////////////
-    ///////////////////////////////////////////////////////////////////////////
     @Override
-    public void runFederate() throws RTIexception {}
-
-    ////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////// Helper Methods //////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////
-
+    protected void setAmbassador() {
+        fedamb = new CarGeneratorAmbassador(this);
+    }
 
     @Override
-    public void run() {
+    protected void runFederateLogic() {
+
+    }
+
+    @Override
+    protected void publishAndSubscribe() throws RTIexception {
 
     }
 }
