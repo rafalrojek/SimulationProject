@@ -1,0 +1,82 @@
+;; A comment in the test file, just to show I'm cool ;;
+(FED
+  (Federation TramPassing)
+  (FEDversion v1.3)
+  (spaces
+    (space TestSpace
+      (dimension TestDimension)
+    )
+    (space OtherSpace
+      (dimension OtherDimension)
+    )
+  )
+  (objects
+    (class ObjectRoot
+      (attribute privilegeToDelete reliable timestamp)
+      (class RTIprivate)
+    )
+  )
+  (interactions
+    (class InteractionRoot reliable timestamp
+      (class RTIprivate reliable timestamp)
+      (class newCarAppeared reliable timestamp
+        (parameter idCar)
+        (parameter tanks)
+        (parameter washing)
+      )
+      (class newCarAtDispenserQueue reliable timestamp
+        (parameter idCar)
+        (parameter tanks)
+        (parameter washing)
+      )
+      (class dispenserAvailable reliable timestamp
+        (parameter idDispenser)
+      )
+      (class occupyDispenser reliable timestamp
+        (parameter idCar)
+        (parameter tanks)
+        (parameter washing)
+        (parameter idDispenser)
+      )
+      (class pumpingEnded reliable timestamp
+        (parameter idDispenser)
+        (parameter idCar)
+        (parameter washing)
+      )
+      (class newCarAtCashBoxQueue reliable timestamp
+        (parameter idCar)
+        (parameter washing)
+        (parameter idDispenser)
+      )
+      (class cashBoxAvailable reliable timestamp
+        (parameter idCash)
+      )
+      (class occupyCashBox reliable timestamp
+        (parameter idCash)
+        (parameter idCar)
+        (parameter idDispenser)
+        (parameter washing)
+      )
+      (class paymentDone reliable timestamp
+        (parameter idCash)
+        (parameter idCar)
+        (parameter idDispenser)
+      )
+      (class newCarAtCarWashQueue reliable timestamp
+        (parameter idCar)
+      )
+      (class carWashAvailable reliable timestamp)
+
+      (class carWashOccupied reliable timestamp
+        (parameter idCar)
+      )
+      (class carWasReleased reliable timestamp
+        (parameter idCar)
+      )
+      (class leaveSimulation reliable timestamp
+        (parameter idCar)
+      )
+    )
+  )
+)
+
