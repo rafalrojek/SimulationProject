@@ -11,7 +11,7 @@ import org.portico.impl.hla13.types.DoubleTime;
 
 /**
  * This class handles all incoming callbacks from the RTI regarding a particular
- * {@link Example13Federate}. It will log information about any callbacks it
+ * link{ Example13Federate}. It will log information about any callbacks it
  * receives, thus demonstrating how to deal with the provided callback information.
  */
 public class FederateAmbassador extends NullFederateAmbassador

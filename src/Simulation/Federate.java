@@ -17,6 +17,7 @@ public abstract class Federate implements Runnable{
     /** The sync point all federates will sync up on before starting */
     public static final String READY_TO_RUN = "ReadyToRun";
 
+
     //----------------------------------------------------------
     //                   INSTANCE VARIABLES
     //----------------------------------------------------------
@@ -210,7 +211,7 @@ public abstract class Federate implements Runnable{
     }
 
     protected abstract void setAmbassador();
-    protected abstract void runFederateLogic();
+    protected abstract void runFederateLogic() throws RTIexception;
     protected abstract void publishAndSubscribe() throws RTIexception;
 
     ////////////////////////////////////////////////////////////////////////////
