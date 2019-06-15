@@ -2,6 +2,7 @@ package Simulation;
 
 import hla.rti.RTIambassador;
 import hla.rti.RTIexception;
+import model.Interaction;
 
 public class CashFederate extends Federate {
 
@@ -28,6 +29,10 @@ public class CashFederate extends Federate {
 
     @Override
     protected void publishAndSubscribe() throws RTIexception {
+        rtiamb.publishInteractionClass(rtiamb.getInteractionClassHandle(Interaction.CASH_BOX_AVAILABLE));
+        rtiamb.publishInteractionClass(rtiamb.getInteractionClassHandle(Interaction.PAYMENT_DONE));
 
+        rtiamb.subscribeInteractionClass(rtiamb.getInteractionClassHandle(Interaction.NEW_CAR_AT_CASH_BOX_QUEUE));
+        rtiamb.subscribeInteractionClass(rtiamb.getInteractionClassHandle(Interaction.OCCUPY_CASH_BOX));
     }
 }

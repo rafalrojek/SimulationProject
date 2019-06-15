@@ -52,8 +52,8 @@
         (parameter idCash)
       )
       (class occupyCashBox reliable timestamp
-        (parameter idCash)
         (parameter idCar)
+        (parameter idCash)
         (parameter idDispenser)
         (parameter washing)
       )
@@ -61,6 +61,7 @@
         (parameter idCash)
         (parameter idCar)
         (parameter idDispenser)
+        (parameter washing)
       )
       (class newCarAtCarWashQueue reliable timestamp
         (parameter idCar)

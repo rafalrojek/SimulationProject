@@ -59,8 +59,8 @@ public class GUIAmbassador extends Ambassador {
                     //TODO: Wywołanie metody
                 }
                 case Interaction.OCCUPY_CASH_BOX : {
-                    int idCash = Integer.parseInt(EncodingHelpers.decodeString(theInteraction.getValue(0)));
-                    int idCar = Integer.parseInt(EncodingHelpers.decodeString(theInteraction.getValue(1)));
+                    int idCar = Integer.parseInt(EncodingHelpers.decodeString(theInteraction.getValue(0)));
+                    int idCash = Integer.parseInt(EncodingHelpers.decodeString(theInteraction.getValue(1)));
                     boolean isWashing = Boolean.parseBoolean(EncodingHelpers.decodeString(theInteraction.getValue(2)));
                     int idDistributor = Integer.parseInt(EncodingHelpers.decodeString(theInteraction.getValue(3)));
                     //TODO: Wywołanie metody
@@ -69,6 +69,7 @@ public class GUIAmbassador extends Ambassador {
                     int idCar = Integer.parseInt(EncodingHelpers.decodeString(theInteraction.getValue(0)));
                     int idCash = Integer.parseInt(EncodingHelpers.decodeString(theInteraction.getValue(1)));
                     int idDistributor = Integer.parseInt(EncodingHelpers.decodeString(theInteraction.getValue(2)));
+                    boolean isWashing = Boolean.parseBoolean(EncodingHelpers.decodeString(theInteraction.getValue(3)));
                     //TODO: Wywołanie metody
                 }
                 case Interaction.NEW_CAR_AT_CAR_WASH_QUEUE : {

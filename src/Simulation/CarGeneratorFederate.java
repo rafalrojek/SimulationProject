@@ -1,6 +1,7 @@
 package Simulation;
 import hla.rti.RTIambassador;
 import hla.rti.RTIexception;
+import model.Interaction;
 
 public class CarGeneratorFederate extends Federate {
 
@@ -28,6 +29,6 @@ public class CarGeneratorFederate extends Federate {
 
     @Override
     protected void publishAndSubscribe() throws RTIexception {
-
+        rtiamb.publishInteractionClass(rtiamb.getInteractionClassHandle(Interaction.NEW_CAR_APPEARED));
     }
 }

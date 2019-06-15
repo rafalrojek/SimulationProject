@@ -44,6 +44,7 @@ public class QueueAmbassador extends Ambassador {
                     int idCar = Integer.parseInt(EncodingHelpers.decodeString(theInteraction.getValue(0)));
                     int idCash = Integer.parseInt(EncodingHelpers.decodeString(theInteraction.getValue(1)));
                     int idDistributor = Integer.parseInt(EncodingHelpers.decodeString(theInteraction.getValue(2)));
+                    boolean isWashing = Boolean.parseBoolean(EncodingHelpers.decodeString(theInteraction.getValue(3)));
                     //TODO: Wywołanie metody
                 }
                 case Interaction.CAR_WASH_AVAILABLE : {
