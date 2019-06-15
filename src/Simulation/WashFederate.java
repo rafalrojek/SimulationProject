@@ -69,6 +69,7 @@ public class WashFederate extends Federate {
     }
 
     public void newCarAtCarWashQueue() throws RTIexception {
+        System.out.println("Doszlo do wash");
         if(carBeingWashed==null){
             sendInteraction();
         }

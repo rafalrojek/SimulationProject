@@ -18,6 +18,7 @@ public class DistributorAmabasssador extends Ambassador {
     @Override
     public void receiveInteraction(int interactionClass, ReceivedInteraction theInteraction, byte[] tag, LogicalTime theTime, EventRetractionHandle eventRetractionHandle) {
         try {
+            System.out.println("Doszlo do distr");
             DistributorFederate fed = (DistributorFederate) federate;
             String interactionName = federate.rtiamb.getInteractionClassName(interactionClass);
             switch (interactionName) {

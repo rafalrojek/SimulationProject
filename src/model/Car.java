@@ -51,4 +51,15 @@ public class Car {
     public void setCashBox(int cashBox) {
         this.cashBox = cashBox;
     }
+
+    @Override
+    public String toString() {
+        return "Car{" +
+                "idCar=" + idCar +
+                ", tanks='" + tanks + '\'' +
+                ", washing=" + washing +
+                ", distributorId=" + distributorId +
+                ", cashBox=" + cashBox +
+                '}';
+    }
 }

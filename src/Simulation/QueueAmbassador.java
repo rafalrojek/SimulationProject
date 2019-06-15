@@ -20,6 +20,8 @@ public class QueueAmbassador extends Ambassador {
         try {
             QueueFederate fed = (QueueFederate) federate;
             String interactionName = federate.rtiamb.getInteractionClassName(interactionClass);
+
+
             switch(interactionName) {
                 case Interaction.NEW_CAR_APPEARED : {
                     int idCar = Integer.parseInt(EncodingHelpers.decodeString(theInteraction.getValue(0)));

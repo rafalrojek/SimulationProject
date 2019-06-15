@@ -8,7 +8,7 @@ import java.util.ArrayList;
 public class Main {
 
     public static void main(String[] args) {
-        String federationName = "GasStationFederate";
+        String federationName = "GasStationFederation";
         int tramsToSimulate = 12;
 
         try

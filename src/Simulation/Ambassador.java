@@ -15,11 +15,11 @@ public abstract class Ambassador extends NullFederateAmbassador {
     //----------------------------------------------------------
     // these variables are accessible in the package
     protected double federateTime        = 0.0;
-    protected double federateLookahead   = 0.0;
+    protected double federateLookahead   = 1.0;
 
     protected boolean isRegulating       = false;
     protected boolean isConstrained      = false;
-    protected boolean isAdvancing        = false;
+    protected boolean isAdvancing        = true;
 
     protected boolean isAnnounced        = false;
     protected boolean isReadyToRun       = false;
@@ -42,7 +42,7 @@ public abstract class Ambassador extends NullFederateAmbassador {
 
     protected void log( String message )
     {
-        System.out.println( "StatisticsAmbassador: " + message );
+        System.out.println( federate.name + "Ambassador : " + message );
     }
 
     //////////////////////////////////////////////////////////////////////////
@@ -54,12 +54,12 @@ public abstract class Ambassador extends NullFederateAmbassador {
 
     public void announceSynchronizationPoint( String label, byte[] tag ) {
         log( "Synchronization point announced: " + label );
-        if( label.equals(Auxiliary.Federate.READY_TO_RUN) ) this.isAnnounced = true;
+        if( label.equals(Federate.READY_TO_RUN) ) this.isAnnounced = true;
     }
 
     public void federationSynchronized( String label ) {
         log( "Federation Synchronized: " + label );
-        if( label.equals(Auxiliary.Federate.READY_TO_RUN) ) this.isReadyToRun = true;
+        if( label.equals(Federate.READY_TO_RUN) ) this.isReadyToRun = true;
     }
 
     /**

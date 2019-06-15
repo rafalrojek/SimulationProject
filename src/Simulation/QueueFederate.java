@@ -43,8 +43,10 @@ public class QueueFederate extends Federate  {
     }
 
     @Override
-    protected void runFederateLogic() {
-
+    protected void runFederateLogic() throws RTIexception {
+        while(!endOfSimulation){
+            advanceTime(1.0);
+        }
     }
 
     @Override
