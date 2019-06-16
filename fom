@@ -80,7 +80,6 @@
       (class lastGenerated reliable timestamp
         (parameter idCar)
       )
-      (class lastFinished reliable timestamp)
     )
   )
 )

@@ -99,7 +99,6 @@ public class WashFederate extends Federate {
         addInteraction(new Interaction(parameters, classHandle, generateTag()));
     }
 
-    //@TODO czy dziala bez parametrow?
     private void registerCarWashAvailableInteraction() throws RTIexception{
         SuppliedParameters parameters = RtiFactoryFactory.getRtiFactory().createSuppliedParameters();
         int classHandle = rtiamb.getInteractionClassHandle(Interaction.CAR_WASH_AVAILABLE);
