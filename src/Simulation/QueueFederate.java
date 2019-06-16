@@ -13,12 +13,15 @@ import java.util.LinkedList;
 import java.util.List;
 
 import model.Interaction;
+import model.Statistics;
 
 public class QueueFederate extends EventDrivenFederate  {
 
+    private int distributorQueueMaxSize;
     private LinkedList<Car> distributorQueue = new LinkedList<>();
     private LinkedList<Car> cashQueue = new LinkedList<>();
     private LinkedList<Car> washQueue = new LinkedList<>();
+    public Statistics stats = new Statistics();
     //add - to the end
     //poll - z poczatku usuwa i zwraca
 
@@ -26,10 +29,11 @@ public class QueueFederate extends EventDrivenFederate  {
     //                      CONSTRUCTORS
     //----------------------------------------------------------
 
-    public QueueFederate(RTIambassador rtiamb, String name, String federationName) {
+    public QueueFederate(RTIambassador rtiamb, String name, String federationName, int distributorQueueMaxSize) {
         this.rtiamb = rtiamb;
         this.name = name;
         this.federationName = federationName;
+        this.distributorQueueMaxSize = distributorQueueMaxSize;
     }
 
     //----------------------------------------------------------
@@ -60,6 +64,7 @@ public class QueueFederate extends EventDrivenFederate  {
         rtiamb.subscribeInteractionClass(rtiamb.getInteractionClassHandle(Interaction.PAYMENT_DONE));
         rtiamb.subscribeInteractionClass(rtiamb.getInteractionClassHandle(Interaction.CAR_WASH_AVAILABLE));
         rtiamb.subscribeInteractionClass(rtiamb.getInteractionClassHandle(Interaction.CAR_WASH_RELEASED));
+        rtiamb.subscribeInteractionClass(rtiamb.getInteractionClassHandle(Interaction.LAST_GENERATED));
     }
 
     private void sendInteraction(Car car, String interaction) throws RTIexception
@@ -127,11 +132,14 @@ public class QueueFederate extends EventDrivenFederate  {
                 idCash = rtiamb.getParameterHandle( "idCash", classHandle );
                 parameters.add(idCash, cash);
                 break;
-
+            case Interaction.LEAVE_SIMULATION :
+                classHandle = rtiamb.getInteractionClassHandle(Interaction.LEAVE_SIMULATION);
+                parameters.add(idCarHandle, carId);
+                break;
             case Interaction.NEW_CAR_AT_CAR_WASH_QUEUE :
             case Interaction.CAR_WASH_OCCUPIED :
             case Interaction.CAR_WASH_RELEASED :
-            case Interaction.LEAVE_SIMULATION :
+
                 break;
             default:
                 throw new IllegalArgumentException("Wrong interaction sent to QueueFederate");
@@ -140,13 +148,25 @@ public class QueueFederate extends EventDrivenFederate  {
         interactions.add(new Interaction(parameters,classHandle,generateTag()));
     }
 
+
+
     public void newCarAppeared(int carId, String tanks, boolean washing) throws RTIexception {
-        Car car = new Car();
-        car.setIdCar(carId);
-        car.setWashing(washing);
-        car.setTanks(tanks);
-        distributorQueue.add(car);
-        sendInteraction(car,Interaction.NEW_CAR_AT_DISPENSER_QUEUE);
+        if(distributorQueue.size() < distributorQueueMaxSize)
+        {
+            Car car = new Car();
+            car.setIdCar(carId);
+            car.setWashing(washing);
+            car.setTanks(tanks);
+            stats.addDistributorsQueueResult(distributorQueue.size(), fedamb.federateTime);
+            distributorQueue.add(car);
+            sendInteraction(car,Interaction.NEW_CAR_AT_DISPENSER_QUEUE);
+        }
+        else{
+            Car car = new Car();
+            car.setIdCar(carId);
+            sendInteraction(car,Interaction.LEAVE_SIMULATION);
+            stats.incrementRejectedNumber(fedamb.federateTime);
+        }
     }
 
     public void distributorAvailable(int distributorId) throws RTIexception {
@@ -183,6 +203,7 @@ public class QueueFederate extends EventDrivenFederate  {
             car.setCashBox(cashId);
             car.setDistributorId(distributorId);
             car.setWashing(washing);
+            stats.addWashQueueResult(washQueue.size(), fedamb.federateTime);
             washQueue.add(car);
             sendInteraction(car,Interaction.NEW_CAR_AT_CAR_WASH_QUEUE);
         }
@@ -196,5 +217,9 @@ public class QueueFederate extends EventDrivenFederate  {
             Car car = washQueue.poll();
             sendInteraction(car,Interaction.CAR_WASH_OCCUPIED);
         }
+    }
+
+    public void showStatistics(){
+        stats.print();
     }
 }

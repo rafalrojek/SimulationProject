@@ -39,7 +39,10 @@ public abstract class Federate implements Runnable{
     /**
      * This is just a helper method to make sure all logging it output in the same form
      */
-    protected void log( String message ) { System.out.println( name + " : " + message ); }
+    protected void log( String message ) {
+        if (fedamb != null) System.out.println(fedamb.federateTime + "  ::  " + name + " : " + message);
+        else System.out.println(name + " : " + message);
+    }
 
     /**
      * This method will block until the user presses enter

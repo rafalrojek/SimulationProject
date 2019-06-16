@@ -45,7 +45,6 @@ public class QueueAmbassador extends Ambassador {
                 }
                 case Interaction.CASH_BOX_AVAILABLE : {
                     int idCash = Integer.parseInt(getParameterFromInteraction(theInteraction, Car.CASH_CODE));
-                    log("Available cash: " + idCash);
                     fed.cashBoxAvailable(idCash);
                     break;
                 }
@@ -55,6 +54,10 @@ public class QueueAmbassador extends Ambassador {
                     int idDistributor = Integer.parseInt(getParameterFromInteraction(theInteraction, Car.DISTRIBUTOR_CODE));
                     boolean isWashing = Boolean.parseBoolean(getParameterFromInteraction(theInteraction, Car.WASH_CODE));
                     fed.paymentDone(idCar,idCash,idDistributor,isWashing);
+                    break;
+                }
+                case Interaction.LAST_GENERATED : {
+                    fed.showStatistics();
                     break;
                 }
                 case Interaction.CAR_WASH_RELEASED :

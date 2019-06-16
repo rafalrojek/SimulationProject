@@ -8,22 +8,29 @@ import hla.rti.jlc.RtiFactoryFactory;
 import model.Car;
 import model.Interaction;
 
+import java.util.Random;
+
 public class DistributorFederate extends EventDrivenFederate {
 
-    private final int numberOfDistributors = 4;
-    private final int timeOfPumping = 10;
+    private int numberOfDistributors;
+    private int timeOfPumping;
+    private int lowerBoundOfPumpingTime;
 
     private Car[] distributors;
+    private Random random = new Random();
 
     //----------------------------------------------------------
     //                      CONSTRUCTORS
     //----------------------------------------------------------
 
-    public DistributorFederate(RTIambassador rtiamb, String name, String federationName) {
+    public DistributorFederate(RTIambassador rtiamb, String name, String federationName, int numberOfDistributors, int timeOfPumping ) {
         this.rtiamb = rtiamb;
         this.name = name;
         this.federationName = federationName;
+        this.timeOfPumping = timeOfPumping;
+        this.numberOfDistributors = numberOfDistributors;
         distributors = new Car[numberOfDistributors];
+        lowerBoundOfPumpingTime = timeOfPumping - 3;
     }
 
     //----------------------------------------------------------
@@ -108,6 +115,6 @@ public class DistributorFederate extends EventDrivenFederate {
     }
 
     public int getTimeOfPumping() {
-        return timeOfPumping;
+        return random.nextInt((timeOfPumping - lowerBoundOfPumpingTime) + 1) + lowerBoundOfPumpingTime;
     }
 }

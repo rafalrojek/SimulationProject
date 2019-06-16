@@ -10,20 +10,25 @@ import model.Interaction;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 
 public class WashFederate extends Federate {
 
     private int idCarBeingWashed = -1;
-    private double carWashOccupiedSince = -1.0;
-    private final int timeOfWashing = 7;
+    private double carWashOccupiedTill = -1.0;
+    private int timeOfWashing;
+    private int washingTimeLowerBound;
+    private Random random = new Random();
     //----------------------------------------------------------
     //                      CONSTRUCTORS
     //----------------------------------------------------------
 
-    public WashFederate(RTIambassador rtiamb, String name, String federationName) {
+    public WashFederate(RTIambassador rtiamb, String name, String federationName, int timeOfWashing) {
         this.rtiamb = rtiamb;
         this.name = name;
         this.federationName = federationName;
+        this.timeOfWashing = timeOfWashing;
+        washingTimeLowerBound = timeOfWashing - 3;
     }
 
     //----------------------------------------------------------
@@ -62,12 +67,23 @@ public class WashFederate extends Federate {
     private void checkIfSomeoneIsntFinishingtheWashing() throws RTIexception {
         if(idCarBeingWashed != -1)
         {
-            if((carWashOccupiedSince + timeOfWashing) == fedamb.federateTime){
+            if((carWashOccupiedTill) == fedamb.federateTime){
                 registerCarWashReleasedInteraction(idCarBeingWashed);
-                carWashOccupiedSince = -1.0;
+                resisterLeaveSimulationInteraction(idCarBeingWashed);
+                carWashOccupiedTill = -1.0;
                 idCarBeingWashed = -1;
             }
         }
+    }
+
+    private void resisterLeaveSimulationInteraction(int carId) throws RTIexception{
+        SuppliedParameters parameters = RtiFactoryFactory.getRtiFactory().createSuppliedParameters();
+        byte[] idCar = EncodingHelpers.encodeString(Car.CAR_CODE + carId);
+        int classHandle = rtiamb.getInteractionClassHandle(Interaction.LEAVE_SIMULATION);
+        int idCarHandle = rtiamb.getParameterHandle( "idCar", classHandle );
+        parameters.add(idCarHandle, idCar);
+        log("Sending interation : " + Interaction.LEAVE_SIMULATION);
+        addInteraction(new Interaction(parameters, classHandle, generateTag()));
     }
 
     private void registerCarWashReleasedInteraction(int carId) throws RTIexception{
@@ -99,6 +115,10 @@ public class WashFederate extends Federate {
 
     public void carWashOccupied(int carId) throws RTIexception {
         idCarBeingWashed = carId;
-        carWashOccupiedSince = fedamb.federateTime;
+        carWashOccupiedTill = fedamb.federateTime + getTimeOfWashing();
+    }
+
+    public int getTimeOfWashing() {
+        return random.nextInt((timeOfWashing - washingTimeLowerBound) + 1) + washingTimeLowerBound;
     }
 }

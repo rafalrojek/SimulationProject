@@ -40,11 +40,9 @@ public abstract class Ambassador extends NullFederateAmbassador {
         return ((DoubleTime)logicalTime).getTime();
     }
 
-    protected void log( String message )
-    {
-        System.out.println( federate.name + "Ambassador : " + message );
+    protected void log( String message ) {
+        System.out.println(federateTime + "  ::  " + federate.name + "Ambassador : " + " : " + message);
     }
-
     //////////////////////////////////////////////////////////////////////////
     ////////////////////////// RTI Callback Methods //////////////////////////
     //////////////////////////////////////////////////////////////////////////

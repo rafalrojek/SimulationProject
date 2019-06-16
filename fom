@@ -71,12 +71,16 @@
       (class carWashOccupied reliable timestamp
         (parameter idCar)
       )
-      (class carWasReleased reliable timestamp
+      (class carWashReleased reliable timestamp
         (parameter idCar)
       )
       (class leaveSimulation reliable timestamp
         (parameter idCar)
       )
+      (class lastGenerated reliable timestamp
+        (parameter idCar)
+      )
+      (class lastFinished reliable timestamp)
     )
   )
 )

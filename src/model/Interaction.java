@@ -20,8 +20,9 @@ public class Interaction {
     public static final String NEW_CAR_AT_CAR_WASH_QUEUE = "InteractionRoot.newCarAtCarWashQueue";
     public static final String CAR_WASH_AVAILABLE = "InteractionRoot.carWashAvailable";
     public static final String CAR_WASH_OCCUPIED = "InteractionRoot.carWashOccupied";
-    public static final String CAR_WASH_RELEASED = "InteractionRoot.carWasReleased";
+    public static final String CAR_WASH_RELEASED = "InteractionRoot.carWashReleased";
     public static final String LEAVE_SIMULATION = "InteractionRoot.leaveSimulation";
+    public static final String LAST_GENERATED = "InteractionRoot.lastGenerated";
 
     private SuppliedParameters params;
     private int classHandle;

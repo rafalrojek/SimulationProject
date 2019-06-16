@@ -10,6 +10,7 @@ import model.Interaction;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 
 public class CashFederate extends Federate {
 
@@ -17,18 +18,24 @@ public class CashFederate extends Federate {
     //                      CONSTRUCTORS
     //----------------------------------------------------------
     private Car[] cashboxes;
-    private double[] cashboxesOccupiedSince;
-    private final int numberOfCashboxes = 2;
-    private final double payingTime = 6;
+    private double[] cashboxesOccupiedTill;
+    private int numberOfCashboxes;
+    private int payingTime;
+    private int payingTimeLowerBound;
+    private Random random = new Random();
 
-    public CashFederate(RTIambassador rtiamb, String name, String federationName) {
+    public CashFederate(RTIambassador rtiamb, String name, String federationName, int numberOfCashboxes, int payingTime) {
         this.rtiamb = rtiamb;
         this.name = name;
         this.federationName = federationName;
+        this.numberOfCashboxes = numberOfCashboxes;
+        this.payingTime = payingTime;
+        this.payingTimeLowerBound = payingTime - 3;
+
         cashboxes = new Car[numberOfCashboxes];
-        cashboxesOccupiedSince = new double[numberOfCashboxes];
+        cashboxesOccupiedTill = new double[numberOfCashboxes];
         for (int i = 0; i < numberOfCashboxes; i++) {
-            cashboxesOccupiedSince[i] = -1.0;
+            cashboxesOccupiedTill[i] = -1.0;
         }
     }
 
@@ -42,6 +49,7 @@ public class CashFederate extends Federate {
     protected void publishAndSubscribe() throws RTIexception {
         rtiamb.publishInteractionClass(rtiamb.getInteractionClassHandle(Interaction.CASH_BOX_AVAILABLE));
         rtiamb.publishInteractionClass(rtiamb.getInteractionClassHandle(Interaction.PAYMENT_DONE));
+        rtiamb.publishInteractionClass(rtiamb.getInteractionClassHandle(Interaction.LEAVE_SIMULATION));
 
         rtiamb.subscribeInteractionClass(rtiamb.getInteractionClassHandle(Interaction.NEW_CAR_AT_CASH_BOX_QUEUE));
         rtiamb.subscribeInteractionClass(rtiamb.getInteractionClassHandle(Interaction.OCCUPY_CASH_BOX));
@@ -65,11 +73,12 @@ public class CashFederate extends Federate {
 
     private void checkIfSomeoneHasntFinishedPaying() throws RTIexception {
         for (int i = 0; i < numberOfCashboxes; i++) {
-            if(cashboxesOccupiedSince[i] != -1.0  )
+            if(cashboxesOccupiedTill[i] != -1.0  )
             {
-                if((cashboxesOccupiedSince[i] + payingTime) == fedamb.federateTime){
+                if((cashboxesOccupiedTill[i]) == fedamb.federateTime){
                     registerPaymentDoneInteraction(cashboxes[i]);
-                    cashboxesOccupiedSince[i] = -1.0;
+                    registerLeaveSimulation(cashboxes[i].getIdCar());
+                    cashboxesOccupiedTill[i] = -1.0;
                     cashboxes[i] = null;
                 }
             }
@@ -110,9 +119,17 @@ public class CashFederate extends Federate {
         int classHandle = rtiamb.getInteractionClassHandle(Interaction.CASH_BOX_AVAILABLE);
         int idCashHandle = rtiamb.getParameterHandle( "idCash", classHandle );
 
-        // put the values into the collection
         parameters.add(idCashHandle, idCash );
 
+        addInteraction(new Interaction(parameters, classHandle, generateTag()));
+    }
+
+    private void registerLeaveSimulation(int carId) throws RTIexception{
+        SuppliedParameters parameters = RtiFactoryFactory.getRtiFactory().createSuppliedParameters();
+        byte[] idCar = EncodingHelpers.encodeString(Car.CAR_CODE + carId);
+        int classHandle = rtiamb.getInteractionClassHandle(Interaction.LEAVE_SIMULATION);
+        int idCarHandle = rtiamb.getParameterHandle( "idCar", classHandle );
+        parameters.add(idCarHandle, idCar );
         addInteraction(new Interaction(parameters, classHandle, generateTag()));
     }
 
@@ -138,6 +155,10 @@ public class CashFederate extends Federate {
         car.setDistributorId(distributorId);
         car.setWashing(washing);
         cashboxes[cashId] = car;
-        cashboxesOccupiedSince[cashId] = fedamb.federateTime;
+        cashboxesOccupiedTill[cashId] = fedamb.federateTime + getPayingTime();
+    }
+
+    public int getPayingTime() {
+        return random.nextInt((payingTime - payingTimeLowerBound) + 1) + payingTimeLowerBound;
     }
 }

@@ -1,8 +1,5 @@
 package Simulation;
-import hla.rti.LogicalTime;
-import hla.rti.RTIambassador;
-import hla.rti.RTIexception;
-import hla.rti.SuppliedParameters;
+import hla.rti.*;
 import hla.rti.jlc.EncodingHelpers;
 import hla.rti.jlc.RtiFactoryFactory;
 import model.Car;
@@ -14,19 +11,25 @@ public class CarGeneratorFederate extends Federate {
 
     private int carId = 1;
     private Random random = new Random();
-    private final int percentThatCarWillGoToWash = 100;
-    private final int numberOfCarsToGenerate = 10;
+    private int percentThatCarWillGoToWash;
+    private int numberOfCarsToGenerate;
     private int numberOfCarsGenerated = 0;
-    private int timeBetweenGenerating = 10;
+    private int timeBetweenGenerating;
+    private int lowerBound;
 
     //----------------------------------------------------------
     //                      CONSTRUCTORS
     //----------------------------------------------------------
 
-    public CarGeneratorFederate(RTIambassador rtiamb, String name, String federationName) {
+    public CarGeneratorFederate(RTIambassador rtiamb, String name, String federationName,
+                                int percentThatCarWillGoToWash, int numberOfCarsToGenerate, int timeBetweenGenerating) {
         this.rtiamb = rtiamb;
         this.name = name;
         this.federationName = federationName;
+        this.numberOfCarsToGenerate = numberOfCarsToGenerate;
+        this.timeBetweenGenerating = timeBetweenGenerating;
+        this.percentThatCarWillGoToWash = percentThatCarWillGoToWash;
+        this.lowerBound = timeBetweenGenerating - 3;
     }
 
     //----------------------------------------------------------
@@ -42,14 +45,16 @@ public class CarGeneratorFederate extends Federate {
     protected void runFederateLogic() throws RTIexception{
         while(numberOfCarsGenerated++ < numberOfCarsToGenerate){
             Car car = generateCar();
-            advanceTime(timeBetweenGenerating);
+            advanceTime(getTimeBetweenGenerating());
             sendInteraction(car);
         }
+        showStatistics();
     }
 
     @Override
     protected void publishAndSubscribe() throws RTIexception {
         rtiamb.publishInteractionClass(rtiamb.getInteractionClassHandle(Interaction.NEW_CAR_APPEARED));
+        rtiamb.publishInteractionClass(rtiamb.getInteractionClassHandle(Interaction.LAST_GENERATED));
     }
 
     private Car generateCar(){
@@ -91,5 +96,17 @@ public class CarGeneratorFederate extends Federate {
         LogicalTime time = convertTime( fedamb.federateTime + fedamb.federateLookahead );
         log("Sending generated car: " + car);
         rtiamb.sendInteraction( classHandle, parameters, generateTag(), time );
+    }
+
+    private void showStatistics() throws RTIexception {
+        SuppliedParameters parameters = RtiFactoryFactory.getRtiFactory().createSuppliedParameters();
+        int classHandle = rtiamb.getInteractionClassHandle(Interaction.LAST_GENERATED);
+        LogicalTime time = convertTime( fedamb.federateTime + fedamb.federateLookahead );
+        log("Sending interaction: " + Interaction.LAST_GENERATED);
+        rtiamb.sendInteraction(classHandle, parameters, generateTag(), time);
+    }
+
+    public int getTimeBetweenGenerating() {
+        return random.nextInt((timeBetweenGenerating - lowerBound) + 1) + lowerBound;
     }
 }
