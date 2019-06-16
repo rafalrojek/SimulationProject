@@ -45,6 +45,7 @@ public class QueueFederate extends Federate  {
     @Override
     protected void runFederateLogic() throws RTIexception {
         while(!endOfSimulation){
+            //log("Time : " + fedamb.federateTime);
             advanceTime(1.0);
         }
     }
@@ -69,16 +70,17 @@ public class QueueFederate extends Federate  {
         rtiamb.subscribeInteractionClass(rtiamb.getInteractionClassHandle(Interaction.CAR_WASH_RELEASED));
     }
 
-    private void sendInteraction(Car car, String interaction) throws RTIexception //typ interakcji (Arrival,Departue), typ obiektu (Station, Passing), id tramwaju i id stacji/mijanki
+    private void sendInteraction(Car car, String interaction) throws RTIexception
     {
         SuppliedParameters parameters =
                 RtiFactoryFactory.getRtiFactory().createSuppliedParameters();
 
         final String interactionType = interaction;
+        log("Sending interaction: " + interaction + " with params: " + car);
 
         //car id, common for all interactions
         LogicalTime time = convertTime( fedamb.federateTime + fedamb.federateLookahead );
-        int classHandle = rtiamb.getInteractionClassHandle("InteractionRoot." + Interaction.NEW_CAR_APPEARED);
+        int classHandle = rtiamb.getInteractionClassHandle(interaction);
         byte[] carId = EncodingHelpers.encodeString( (car.getIdCar())+"" );
         int idCarHandle = rtiamb.getParameterHandle( "idCar", classHandle );
         parameters.add(idCarHandle, carId );
@@ -152,6 +154,7 @@ public class QueueFederate extends Federate  {
         // interaction, you will have to supply it to the RTI. Here
         // we send another interaction, this time with a timestamp:
         rtiamb.sendInteraction(classHandle, parameters, generateTag(), time );
+        rtiamb.tick();
     }
 
     public void newCarAppeared(int carId, String tanks, boolean washing) throws RTIexception {

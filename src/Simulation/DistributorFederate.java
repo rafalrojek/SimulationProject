@@ -61,6 +61,7 @@ public class DistributorFederate extends Federate {
         parameters.add(idWashHandle, wash);
 
         LogicalTime time = convertTime( fedamb.federateTime + fedamb.federateLookahead );
+        log("Sending interaction: " + Interaction.PUMPING_ENDED);
         rtiamb.sendInteraction( classHandle, parameters, generateTag(), time );
     }
 
@@ -77,6 +78,7 @@ public class DistributorFederate extends Federate {
         parameters.add(idDispenserHandle, idDispenser );
 
         LogicalTime time = convertTime( fedamb.federateTime + fedamb.federateLookahead );
+        log("Sending interaction: " + Interaction.DISPENSER_AVAILABLE);
         rtiamb.sendInteraction( classHandle, parameters, generateTag(), time );
     }
 

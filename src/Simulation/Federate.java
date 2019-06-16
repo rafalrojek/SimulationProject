@@ -79,7 +79,7 @@ public abstract class Federate implements Runnable{
         ////////////////////////////
         // enable time regulation //
         ////////////////////////////
-		this.rtiamb.enableTimeRegulation( currentTime, lookahead );
+        this.rtiamb.enableTimeRegulation( currentTime, lookahead );
 
 		// tick until we get the callback
 		while( fedamb.isRegulating == false )

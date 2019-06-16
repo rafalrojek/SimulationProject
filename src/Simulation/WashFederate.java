@@ -32,7 +32,9 @@ public class WashFederate extends Federate {
 
     @Override
     protected void runFederateLogic() throws RTIexception {
-        advanceTime(1.0);
+        while(!endOfSimulation){
+            advanceTime(1.0);
+        }
     }
 
     @Override
@@ -58,6 +60,7 @@ public class WashFederate extends Federate {
         parameters.add(idCarHandle, idCar);
 
         LogicalTime time = convertTime( fedamb.federateTime + fedamb.federateLookahead );
+        log("Sending interation : " + Interaction.CAR_WASH_RELEASED);
         rtiamb.sendInteraction( classHandle, parameters, generateTag(), time );
     }
 
@@ -65,6 +68,7 @@ public class WashFederate extends Federate {
     private void sendInteraction() throws RTIexception{
         int classHandle = rtiamb.getInteractionClassHandle(Interaction.CAR_WASH_AVAILABLE);
         LogicalTime time = convertTime( fedamb.federateTime + fedamb.federateLookahead );
+        log("Sending interation : " + Interaction.CAR_WASH_AVAILABLE);
         rtiamb.sendInteraction( classHandle, null, generateTag(), time );
     }
 

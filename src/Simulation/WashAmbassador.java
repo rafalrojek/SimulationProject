@@ -20,6 +20,10 @@ public class WashAmbassador extends Ambassador{
         try {
             WashFederate fed = (WashFederate) federate;
             String interactionName = federate.rtiamb.getInteractionClassName(interactionClass);
+            log("Received interactioin : " + interactionName);
+            for (int i = 0; i < theInteraction.size(); i++) {
+                log("interakcja[" + i + "] : " + EncodingHelpers.decodeString(theInteraction.getValue(i)));
+            }
             switch(interactionName) {
                 case Interaction.NEW_CAR_AT_CAR_WASH_QUEUE : {
                     //int idCar = Integer.parseInt(EncodingHelpers.decodeString(theInteraction.getValue(0)));

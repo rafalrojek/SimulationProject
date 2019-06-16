@@ -20,6 +20,10 @@ public class CashAmbassador extends Ambassador {
         try {
             CashFederate fed = (CashFederate) federate;
             String interactionName = federate.rtiamb.getInteractionClassName(interactionClass);
+            log("Received interaction: " + interactionName);
+            for (int i = 0; i < theInteraction.size(); i++) {
+                log("interakcja[" + i + "] : " + EncodingHelpers.decodeString(theInteraction.getValue(i)));
+            }
             switch(interactionName) {
                 case Interaction.NEW_CAR_AT_CASH_BOX_QUEUE : {
                     int idCar = Integer.parseInt(EncodingHelpers.decodeString(theInteraction.getValue(0)));

@@ -18,9 +18,12 @@ public class DistributorAmabasssador extends Ambassador {
     @Override
     public void receiveInteraction(int interactionClass, ReceivedInteraction theInteraction, byte[] tag, LogicalTime theTime, EventRetractionHandle eventRetractionHandle) {
         try {
-            System.out.println("Doszlo do distr");
             DistributorFederate fed = (DistributorFederate) federate;
             String interactionName = federate.rtiamb.getInteractionClassName(interactionClass);
+            log("Received interaction: " + interactionName);
+            for (int i = 0; i < theInteraction.size(); i++) {
+                log("interakcja[" + i + "] : " + EncodingHelpers.decodeString(theInteraction.getValue(i)));
+            }
             switch (interactionName) {
                 case Interaction.NEW_CAR_AT_DISPENSER_QUEUE: {
                     int idCar = Integer.parseInt(EncodingHelpers.decodeString(theInteraction.getValue(0)));

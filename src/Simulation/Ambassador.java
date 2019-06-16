@@ -15,7 +15,7 @@ public abstract class Ambassador extends NullFederateAmbassador {
     //----------------------------------------------------------
     // these variables are accessible in the package
     protected double federateTime        = 0.0;
-    protected double federateLookahead   = 1.0;
+    protected double federateLookahead   = 2.0;
 
     protected boolean isRegulating       = false;
     protected boolean isConstrained      = false;

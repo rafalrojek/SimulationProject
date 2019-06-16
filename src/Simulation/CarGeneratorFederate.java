@@ -15,7 +15,7 @@ public class CarGeneratorFederate extends Federate {
     private int carId = 1;
     private Random random = new Random();
     private final int percentThatCarWillGoToWash = 70;
-    private final int numberOfCarsToGenerate = 50;
+    private final int numberOfCarsToGenerate = 10;
     private int numberOfCarsGenerated = 0;
     private int timeBetweenGenerating = 5;
 
@@ -42,11 +42,10 @@ public class CarGeneratorFederate extends Federate {
     protected void runFederateLogic() throws RTIexception{
         while(numberOfCarsGenerated++ < numberOfCarsToGenerate){
             Car car = generateCar();
-            sendInteraction(car);
             for (int i = 0; i < timeBetweenGenerating; i++) {
                 advanceTime(1.0);
             }
-            System.out.println("Generated car: " + car);
+            sendInteraction(car);
         }
     }
 
@@ -92,9 +91,8 @@ public class CarGeneratorFederate extends Federate {
         // if you want to associate a particular timestamp with the
         // interaction, you will have to supply it to the RTI. Here
         // we send another interaction, this time with a timestamp:
-        LogicalTime time = convertTime( fedamb.federateTime +
-                fedamb.federateLookahead );
+        LogicalTime time = convertTime( fedamb.federateTime + fedamb.federateLookahead );
+        log("Sending generated car: " + car);
         rtiamb.sendInteraction( classHandle, parameters, generateTag(), time );
     }
-
 }

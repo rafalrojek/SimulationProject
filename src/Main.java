@@ -8,13 +8,10 @@ import java.util.ArrayList;
 public class Main {
 
     public static void main(String[] args) {
-        String federationName = "GasStationFederation";
-        int tramsToSimulate = 12;
+        String federationName = "GasStationFederat";
 
         try
         {
-            //ArrayList<LaneObject> lane = createLane();
-            //Statistics stats = new Statistics(lane, tramsToSimulate);
 
             RTIambassador amb1 = RtiFactoryFactory.getRtiFactory().createRtiAmbassador();
             Thread watek = new Thread(new CarGeneratorFederate(amb1,"CarGeneratorFederate", federationName));
