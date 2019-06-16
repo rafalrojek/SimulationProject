@@ -18,6 +18,10 @@ import model.Statistics;
 public class QueueFederate extends EventDrivenFederate  {
 
     private int distributorQueueMaxSize;
+    private int numberOfCarsToBeHandled;
+    private int numberOfCarsHandled = 0;
+
+
     private LinkedList<Car> distributorQueue = new LinkedList<>();
     private LinkedList<Car> cashQueue = new LinkedList<>();
     private LinkedList<Car> washQueue = new LinkedList<>();
@@ -45,7 +49,6 @@ public class QueueFederate extends EventDrivenFederate  {
         fedamb = new QueueAmbassador(this);
     }
 
-
     @Override
     protected void publishAndSubscribe() throws RTIexception {
         rtiamb.publishInteractionClass(rtiamb.getInteractionClassHandle(Interaction.NEW_CAR_AT_DISPENSER_QUEUE));
@@ -57,6 +60,7 @@ public class QueueFederate extends EventDrivenFederate  {
         rtiamb.publishInteractionClass(rtiamb.getInteractionClassHandle(Interaction.CAR_WASH_RELEASED));
         rtiamb.publishInteractionClass(rtiamb.getInteractionClassHandle(Interaction.LEAVE_SIMULATION));
 
+        rtiamb.subscribeInteractionClass(rtiamb.getInteractionClassHandle(Interaction.DECLARE_NUMBER_OF_CARS));
         rtiamb.subscribeInteractionClass(rtiamb.getInteractionClassHandle(Interaction.NEW_CAR_APPEARED));
         rtiamb.subscribeInteractionClass(rtiamb.getInteractionClassHandle(Interaction.DISPENSER_AVAILABLE));
         rtiamb.subscribeInteractionClass(rtiamb.getInteractionClassHandle(Interaction.PUMPING_ENDED));
@@ -64,7 +68,7 @@ public class QueueFederate extends EventDrivenFederate  {
         rtiamb.subscribeInteractionClass(rtiamb.getInteractionClassHandle(Interaction.PAYMENT_DONE));
         rtiamb.subscribeInteractionClass(rtiamb.getInteractionClassHandle(Interaction.CAR_WASH_AVAILABLE));
         rtiamb.subscribeInteractionClass(rtiamb.getInteractionClassHandle(Interaction.CAR_WASH_RELEASED));
-        rtiamb.subscribeInteractionClass(rtiamb.getInteractionClassHandle(Interaction.LAST_GENERATED));
+        rtiamb.subscribeInteractionClass(rtiamb.getInteractionClassHandle(Interaction.LEAVE_SIMULATION));
     }
 
     private void sendInteraction(Car car, String interaction) throws RTIexception
@@ -219,7 +223,15 @@ public class QueueFederate extends EventDrivenFederate  {
         }
     }
 
-    public void showStatistics(){
-        stats.print();
+    public void setNumberOfCarsToBeHandled(int numberOfCarsToBeHandled) {
+        this.numberOfCarsToBeHandled = numberOfCarsToBeHandled;
+    }
+
+    public void anotherCarAppeared(){
+        numberOfCarsHandled++;
+        log("handled = " + numberOfCarsHandled + "/" + numberOfCarsToBeHandled);
+        if(numberOfCarsHandled == numberOfCarsToBeHandled){
+            stats.print();
+        }
     }
 }

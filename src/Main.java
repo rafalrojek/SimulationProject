@@ -7,14 +7,14 @@ public class Main {
     public static void main(String[] args) {
         String federationName = "GasStationFederation";
 
-        final int percentThatCarWillGoToWash = 70;
-        final int numberOfCarsToGenerate = 100;
-        final int numberOfCashboxes = 4;
-        final int numberOfDistributors = 5;
-        final int distributorQueueMaxSize = 10;
+        final int percentThatCarWillGoToWash = 100;
+        final int numberOfCarsToGenerate = 2;
+        final int numberOfCashboxes = 1;
+        final int numberOfDistributors = 2;
+        final int distributorQueueMaxSize = 5;
 
         final int timeBetweenGenerating = 7;
-        final int timeOfPumping = 9;
+        final int timeOfPumping = 7;
         final int payingTime = 7;
         final int timeOfWashing = 7;
 

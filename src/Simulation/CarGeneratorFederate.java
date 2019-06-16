@@ -43,18 +43,18 @@ public class CarGeneratorFederate extends Federate {
 
     @Override
     protected void runFederateLogic() throws RTIexception{
+        declareNumberOfCars();
         while(numberOfCarsGenerated++ < numberOfCarsToGenerate){
             Car car = generateCar();
             advanceTime(getTimeBetweenGenerating());
             sendInteraction(car);
         }
-        showStatistics();
     }
 
     @Override
     protected void publishAndSubscribe() throws RTIexception {
         rtiamb.publishInteractionClass(rtiamb.getInteractionClassHandle(Interaction.NEW_CAR_APPEARED));
-        rtiamb.publishInteractionClass(rtiamb.getInteractionClassHandle(Interaction.LAST_GENERATED));
+        rtiamb.publishInteractionClass(rtiamb.getInteractionClassHandle(Interaction.DECLARE_NUMBER_OF_CARS));
     }
 
     private Car generateCar(){
@@ -98,12 +98,15 @@ public class CarGeneratorFederate extends Federate {
         rtiamb.sendInteraction( classHandle, parameters, generateTag(), time );
     }
 
-    private void showStatistics() throws RTIexception {
+    public void declareNumberOfCars() throws RTIexception {
         SuppliedParameters parameters = RtiFactoryFactory.getRtiFactory().createSuppliedParameters();
-        int classHandle = rtiamb.getInteractionClassHandle(Interaction.LAST_GENERATED);
+        byte[] numberOfCars = EncodingHelpers.encodeString(numberOfCarsToGenerate+"");
+        int classHandle = rtiamb.getInteractionClassHandle(Interaction.DECLARE_NUMBER_OF_CARS);
+        int handle = rtiamb.getParameterHandle( "numberOfCars", classHandle );
+        parameters.add(handle, numberOfCars );
         LogicalTime time = convertTime( fedamb.federateTime + fedamb.federateLookahead );
-        log("Sending interaction: " + Interaction.LAST_GENERATED);
-        rtiamb.sendInteraction(classHandle, parameters, generateTag(), time);
+        log("Declaring number of cars: " + numberOfCarsToGenerate);
+        rtiamb.sendInteraction( classHandle, parameters, generateTag(), time );
     }
 
     public int getTimeBetweenGenerating() {

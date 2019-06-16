@@ -73,11 +73,13 @@ public class CashFederate extends Federate {
 
     private void checkIfSomeoneHasntFinishedPaying() throws RTIexception {
         for (int i = 0; i < numberOfCashboxes; i++) {
-            if(cashboxesOccupiedTill[i] != -1.0  )
+            if(cashboxes[i] != null )
             {
                 if((cashboxesOccupiedTill[i]) == fedamb.federateTime){
                     registerPaymentDoneInteraction(cashboxes[i]);
-                    registerLeaveSimulation(cashboxes[i].getIdCar());
+                    if( ! cashboxes[i].isWashing()) {
+                        registerLeaveSimulation(cashboxes[i].getIdCar());
+                    }
                     cashboxesOccupiedTill[i] = -1.0;
                     cashboxes[i] = null;
                 }

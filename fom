@@ -77,8 +77,8 @@
       (class leaveSimulation reliable timestamp
         (parameter idCar)
       )
-      (class lastGenerated reliable timestamp
-        (parameter idCar)
+      (class declareNumberOfCars reliable timestamp
+        (parameter numberOfCars)
       )
     )
   )

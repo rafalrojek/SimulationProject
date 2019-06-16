@@ -56,8 +56,15 @@ public class QueueAmbassador extends Ambassador {
                     fed.paymentDone(idCar,idCash,idDistributor,isWashing);
                     break;
                 }
-                case Interaction.LAST_GENERATED : {
-                    fed.showStatistics();
+                case Interaction.DECLARE_NUMBER_OF_CARS : {
+                    Integer numberOfCars = Integer.parseInt(EncodingHelpers.decodeString(theInteraction.getValue(0)));
+                    log("Number of cars to be handled: " + numberOfCars);
+                    fed.setNumberOfCarsToBeHandled(numberOfCars);
+                    break;
+                }
+                case Interaction.LEAVE_SIMULATION : {
+                    log("Id of car leaving simulation: " + EncodingHelpers.decodeString(theInteraction.getValue(0)));
+                    fed.anotherCarAppeared();
                     break;
                 }
                 case Interaction.CAR_WASH_RELEASED :

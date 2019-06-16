@@ -2,8 +2,6 @@ package model;
 
 import hla.rti.LogicalTime;
 import hla.rti.SuppliedParameters;
-import hla.rti.jlc.EncodingHelpers;
-import hla.rti.jlc.RtiFactoryFactory;
 
 import java.util.Arrays;
 
@@ -22,7 +20,7 @@ public class Interaction {
     public static final String CAR_WASH_OCCUPIED = "InteractionRoot.carWashOccupied";
     public static final String CAR_WASH_RELEASED = "InteractionRoot.carWashReleased";
     public static final String LEAVE_SIMULATION = "InteractionRoot.leaveSimulation";
-    public static final String LAST_GENERATED = "InteractionRoot.lastGenerated";
+    public static final String DECLARE_NUMBER_OF_CARS = "InteractionRoot.declareNumberOfCars";
 
     private SuppliedParameters params;
     private int classHandle;
