@@ -9,7 +9,10 @@ import hla.rti.jlc.RtiFactoryFactory;
 import model.Car;
 import model.Interaction;
 
-public class DistributorFederate extends Federate {
+import java.util.LinkedList;
+import java.util.List;
+
+public class DistributorFederate extends EventDrivenFederate {
 
     private static final int numberOfDistributors = 4;
     private static final int timeOfPumping = 10;
@@ -34,17 +37,10 @@ public class DistributorFederate extends Federate {
     @Override
     protected void setAmbassador() { fedamb = new DistributorAmabasssador(this); }
 
-    @Override
-    protected void runFederateLogic() throws RTIexception {
-        while(!endOfSimulation){
-            advanceTime(1.0);
-        }
-    }
 
     private void sendInteraction(Car car) throws RTIexception
     {
-        SuppliedParameters parameters =
-                RtiFactoryFactory.getRtiFactory().createSuppliedParameters();
+        SuppliedParameters parameters = RtiFactoryFactory.getRtiFactory().createSuppliedParameters();
 
         byte[] carId = EncodingHelpers.encodeString( (car.getIdCar())+"" );
         byte[] idDispenser = EncodingHelpers.encodeString( (car.getDistributorId()+""));
@@ -60,26 +56,20 @@ public class DistributorFederate extends Federate {
         parameters.add(idCarHandle, carId );
         parameters.add(idWashHandle, wash);
 
-        LogicalTime time = convertTime( fedamb.federateTime + fedamb.federateLookahead );
         log("Sending interaction: " + Interaction.PUMPING_ENDED);
-        rtiamb.sendInteraction( classHandle, parameters, generateTag(), time );
+        addInteraction(new Interaction(parameters, classHandle, generateTag()));
     }
 
     private void sendInteraction(int dispenserId) throws RTIexception{
-        SuppliedParameters parameters =
-                RtiFactoryFactory.getRtiFactory().createSuppliedParameters();
+        SuppliedParameters parameters = RtiFactoryFactory.getRtiFactory().createSuppliedParameters();
 
         byte[] idDispenser = EncodingHelpers.encodeString( dispenserId+"");
-
         int classHandle = rtiamb.getInteractionClassHandle(Interaction.DISPENSER_AVAILABLE);
         int idDispenserHandle = rtiamb.getParameterHandle( "idDispenser", classHandle );
-
-        // put the values into the collection
         parameters.add(idDispenserHandle, idDispenser );
 
-        LogicalTime time = convertTime( fedamb.federateTime + fedamb.federateLookahead );
         log("Sending interaction: " + Interaction.DISPENSER_AVAILABLE);
-        rtiamb.sendInteraction( classHandle, parameters, generateTag(), time );
+        addInteraction(new Interaction(parameters, classHandle, generateTag()));
     }
 
     private int isAnyDispenserFree(){

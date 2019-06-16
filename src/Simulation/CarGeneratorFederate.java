@@ -15,7 +15,7 @@ public class CarGeneratorFederate extends Federate {
     private int carId = 1;
     private Random random = new Random();
     private final int percentThatCarWillGoToWash = 70;
-    private final int numberOfCarsToGenerate = 10;
+    private final int numberOfCarsToGenerate = 1;
     private int numberOfCarsGenerated = 0;
     private int timeBetweenGenerating = 5;
 

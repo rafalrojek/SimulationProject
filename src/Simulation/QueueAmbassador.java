@@ -32,6 +32,7 @@ public class QueueAmbassador extends Ambassador {
                     boolean isWashing = Boolean.parseBoolean(EncodingHelpers.decodeString(theInteraction.getValue(1)));
                     int idCar = Integer.parseInt(EncodingHelpers.decodeString(theInteraction.getValue(2)));
                     fed.newCarAppeared(idCar,oil,isWashing);
+                    break;
                 }
                 case Interaction.DISPENSER_AVAILABLE : {
                     int idDistributor = Integer.parseInt(EncodingHelpers.decodeString(theInteraction.getValue(0)));

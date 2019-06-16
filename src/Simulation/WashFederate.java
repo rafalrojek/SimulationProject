@@ -9,7 +9,9 @@ import hla.rti.jlc.RtiFactoryFactory;
 import model.Car;
 import model.Interaction;
 
-public class WashFederate extends Federate {
+import java.awt.*;
+
+public class WashFederate extends EventDrivenFederate {
 
     private Car carBeingWashed = null;
     private final int timeOfWashing = 7;
@@ -31,13 +33,6 @@ public class WashFederate extends Federate {
     protected void setAmbassador() { fedamb = new WashAmbassador(this); }
 
     @Override
-    protected void runFederateLogic() throws RTIexception {
-        while(!endOfSimulation){
-            advanceTime(1.0);
-        }
-    }
-
-    @Override
     protected void publishAndSubscribe() throws RTIexception {
         rtiamb.publishInteractionClass(rtiamb.getInteractionClassHandle(Interaction.CAR_WASH_AVAILABLE));
         rtiamb.publishInteractionClass(rtiamb.getInteractionClassHandle(Interaction.CAR_WASH_RELEASED));
@@ -55,21 +50,17 @@ public class WashFederate extends Federate {
 
         int classHandle = rtiamb.getInteractionClassHandle(Interaction.CAR_WASH_RELEASED);
         int idCarHandle = rtiamb.getParameterHandle( "idCar", classHandle );
-
-        // put the values into the collection
         parameters.add(idCarHandle, idCar);
 
-        LogicalTime time = convertTime( fedamb.federateTime + fedamb.federateLookahead );
         log("Sending interation : " + Interaction.CAR_WASH_RELEASED);
-        rtiamb.sendInteraction( classHandle, parameters, generateTag(), time );
+        addInteraction(new Interaction(parameters, classHandle, generateTag()));
     }
 
     //@TODO czy dziala bez parametrow?
     private void sendInteraction() throws RTIexception{
         int classHandle = rtiamb.getInteractionClassHandle(Interaction.CAR_WASH_AVAILABLE);
-        LogicalTime time = convertTime( fedamb.federateTime + fedamb.federateLookahead );
         log("Sending interation : " + Interaction.CAR_WASH_AVAILABLE);
-        rtiamb.sendInteraction( classHandle, null, generateTag(), time );
+        addInteraction(new Interaction(null, classHandle, generateTag()));
     }
 
     public void newCarAtCarWashQueue() throws RTIexception {

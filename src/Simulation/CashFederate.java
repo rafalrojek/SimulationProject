@@ -9,7 +9,7 @@ import hla.rti.jlc.RtiFactoryFactory;
 import model.Car;
 import model.Interaction;
 
-public class CashFederate extends Federate {
+public class CashFederate extends EventDrivenFederate {
 
     //----------------------------------------------------------
     //                      CONSTRUCTORS
@@ -30,13 +30,6 @@ public class CashFederate extends Federate {
     //----------------------------------------------------------
     @Override
     protected void setAmbassador() { fedamb = new CashAmbassador(this); }
-
-    @Override
-    protected void runFederateLogic() throws RTIexception {
-        while(!endOfSimulation){
-            advanceTime(1.0);
-        }
-    }
 
     @Override
     protected void publishAndSubscribe() throws RTIexception {
@@ -69,9 +62,7 @@ public class CashFederate extends Federate {
         parameters.add(idDispenserHandle, idDispenser );
         parameters.add(idWashHandle, wash);
 
-
-        LogicalTime time = convertTime( fedamb.federateTime + fedamb.federateLookahead );
-        rtiamb.sendInteraction( classHandle, parameters, generateTag(), time );
+        addInteraction(new Interaction(parameters, classHandle, generateTag()));
     }
 
     private void sendInteraction(int cashId) throws RTIexception{
@@ -86,8 +77,7 @@ public class CashFederate extends Federate {
         // put the values into the collection
         parameters.add(idCashHandle, idCash );
 
-        LogicalTime time = convertTime( fedamb.federateTime + fedamb.federateLookahead );
-        rtiamb.sendInteraction( classHandle, parameters, generateTag(), time );
+        addInteraction(new Interaction(parameters, classHandle, generateTag()));
     }
 
     public void newCarAtCashBoxQueue(int carId, boolean washing, int distributorId) throws RTIexception {

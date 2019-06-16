@@ -10,18 +10,17 @@ import model.Car;
 import model.Interaction;
 
 import java.util.LinkedList;
+import java.util.List;
+
 import model.Interaction;
 
-public class QueueFederate extends Federate  {
+public class QueueFederate extends EventDrivenFederate  {
 
     private LinkedList<Car> distributorQueue = new LinkedList<>();
     private LinkedList<Car> cashQueue = new LinkedList<>();
     private LinkedList<Car> washQueue = new LinkedList<>();
     //add - to the end
     //poll - z poczatku usuwa i zwraca
-
-
-
 
     //----------------------------------------------------------
     //                      CONSTRUCTORS
@@ -42,13 +41,6 @@ public class QueueFederate extends Federate  {
         fedamb = new QueueAmbassador(this);
     }
 
-    @Override
-    protected void runFederateLogic() throws RTIexception {
-        while(!endOfSimulation){
-            //log("Time : " + fedamb.federateTime);
-            advanceTime(1.0);
-        }
-    }
 
     @Override
     protected void publishAndSubscribe() throws RTIexception {
@@ -79,7 +71,6 @@ public class QueueFederate extends Federate  {
         log("Sending interaction: " + interaction + " with params: " + car);
 
         //car id, common for all interactions
-        LogicalTime time = convertTime( fedamb.federateTime + fedamb.federateLookahead );
         int classHandle = rtiamb.getInteractionClassHandle(interaction);
         byte[] carId = EncodingHelpers.encodeString( (car.getIdCar())+"" );
         int idCarHandle = rtiamb.getParameterHandle( "idCar", classHandle );
@@ -146,15 +137,7 @@ public class QueueFederate extends Federate  {
                 throw new IllegalArgumentException("Wrong interaction sent to QueueFederate");
         }
 
-        //////////////////////////
-        // send the interaction //
-        //////////////////////////
-        //rtiamb.sendInteraction( classHandle, parameters, generateTag() );
-        // if you want to associate a particular timestamp with the
-        // interaction, you will have to supply it to the RTI. Here
-        // we send another interaction, this time with a timestamp:
-        rtiamb.sendInteraction(classHandle, parameters, generateTag(), time );
-        rtiamb.tick();
+        interactions.add(new Interaction(parameters,classHandle,generateTag()));
     }
 
     public void newCarAppeared(int carId, String tanks, boolean washing) throws RTIexception {
@@ -164,6 +147,7 @@ public class QueueFederate extends Federate  {
         car.setTanks(tanks);
         distributorQueue.add(car);
         sendInteraction(car,Interaction.NEW_CAR_AT_DISPENSER_QUEUE);
+        //log("Wysłano do kolejki: " + carId);
     }
 
     public void distributorAvailable(int distributorId) throws RTIexception {
