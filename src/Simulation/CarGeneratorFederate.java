@@ -14,10 +14,10 @@ public class CarGeneratorFederate extends Federate {
 
     private int carId = 1;
     private Random random = new Random();
-    private final int percentThatCarWillGoToWash = 70;
-    private final int numberOfCarsToGenerate = 1;
+    private final int percentThatCarWillGoToWash = 100;
+    private final int numberOfCarsToGenerate = 10;
     private int numberOfCarsGenerated = 0;
-    private int timeBetweenGenerating = 5;
+    private int timeBetweenGenerating = 10;
 
     //----------------------------------------------------------
     //                      CONSTRUCTORS
@@ -42,9 +42,7 @@ public class CarGeneratorFederate extends Federate {
     protected void runFederateLogic() throws RTIexception{
         while(numberOfCarsGenerated++ < numberOfCarsToGenerate){
             Car car = generateCar();
-            for (int i = 0; i < timeBetweenGenerating; i++) {
-                advanceTime(1.0);
-            }
+            advanceTime(timeBetweenGenerating);
             sendInteraction(car);
         }
     }
@@ -64,15 +62,14 @@ public class CarGeneratorFederate extends Federate {
         car.setWashing(random.nextDouble() < ((double) percentThatCarWillGoToWash / 100));
         return car;
     }
-
+//O G P
     private void sendInteraction(Car car) throws RTIexception
     {
-        SuppliedParameters parameters =
-                RtiFactoryFactory.getRtiFactory().createSuppliedParameters();
+        SuppliedParameters parameters = RtiFactoryFactory.getRtiFactory().createSuppliedParameters();
 
-        byte[] carId = EncodingHelpers.encodeString( (car.getIdCar())+"" );
-        byte[] tanks = EncodingHelpers.encodeString( (car.getTanks()));
-        byte[] wash = EncodingHelpers.encodeString( (car.isWashing() + ""));
+        byte[] carVal = EncodingHelpers.encodeString((Car.CAR_CODE + car.getIdCar()));
+        byte[] tanksVal = EncodingHelpers.encodeString((Car.TANKS_CODE + car.getTanks()));
+        byte[] washVal = EncodingHelpers.encodeString((Car.WASH_CODE + car.isWashing()));
 
         int classHandle = rtiamb.getInteractionClassHandle(Interaction.NEW_CAR_APPEARED);
         int idCarHandle = rtiamb.getParameterHandle( "idCar", classHandle );
@@ -80,9 +77,9 @@ public class CarGeneratorFederate extends Federate {
         int idWashHandle = rtiamb.getParameterHandle( "washing", classHandle );
 
         // put the values into the collection
-        parameters.add(idCarHandle, carId );
-        parameters.add(idTanksHandle, tanks );
-        parameters.add(idWashHandle, wash);
+        parameters.add(idCarHandle, carVal );
+        parameters.add(idTanksHandle, tanksVal );
+        parameters.add(idWashHandle, washVal);
 
         //////////////////////////
         // send the interaction //

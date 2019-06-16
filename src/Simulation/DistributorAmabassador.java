@@ -5,37 +5,42 @@ import hla.rti.jlc.EncodingHelpers;
 import model.Car;
 import model.Interaction;
 
-public class CashAmbassador extends Ambassador {
+public class DistributorAmabassador extends Ambassador {
 
     //----------------------------------------------------------
     //                      CONSTRUCTORS
     //----------------------------------------------------------
 
 
-    public CashAmbassador(CashFederate federate) {
+    public DistributorAmabassador(DistributorFederate federate) {
         this.federate = federate;
     }
 
     @Override
     public void receiveInteraction(int interactionClass, ReceivedInteraction theInteraction, byte[] tag, LogicalTime theTime, EventRetractionHandle eventRetractionHandle) {
         try {
-            CashFederate fed = (CashFederate) federate;
+            DistributorFederate fed = (DistributorFederate) federate;
             String interactionName = federate.rtiamb.getInteractionClassName(interactionClass);
             log("Received interaction: " + interactionName);
-            switch(interactionName) {
-                case Interaction.NEW_CAR_AT_CASH_BOX_QUEUE : {
+            switch (interactionName) {
+                case Interaction.NEW_CAR_AT_DISPENSER_QUEUE: {
                     int idCar = Integer.parseInt(getParameterFromInteraction(theInteraction, Car.CAR_CODE));
+                    String oil = getParameterFromInteraction(theInteraction, Car.TANKS_CODE);
                     boolean isWashing = Boolean.parseBoolean(getParameterFromInteraction(theInteraction, Car.WASH_CODE));
-                    int idDistributor = Integer.parseInt(getParameterFromInteraction(theInteraction, Car.DISTRIBUTOR_CODE));
-                    fed.newCarAtCashBoxQueue(idCar,isWashing,idDistributor);
+                    fed.newCarAtDispenserQueue(idCar,oil,isWashing);
                     break;
                 }
-                case Interaction.OCCUPY_CASH_BOX : {
+                case Interaction.OCCUPY_DISPENSER: {
                     int idCar = Integer.parseInt(getParameterFromInteraction(theInteraction, Car.CAR_CODE));
-                    int idCash = Integer.parseInt(getParameterFromInteraction(theInteraction, Car.CASH_CODE));
+                    String oil = getParameterFromInteraction(theInteraction, Car.TANKS_CODE);
                     boolean isWashing = Boolean.parseBoolean(getParameterFromInteraction(theInteraction, Car.WASH_CODE));
                     int idDistributor = Integer.parseInt(getParameterFromInteraction(theInteraction, Car.DISTRIBUTOR_CODE));
-                    fed.occupyCashBox(idCash,idCar,idDistributor,isWashing);
+                    fed.occupyDispenser(idCar, oil, isWashing, idDistributor);
+                    break;
+                }
+                case Interaction.PAYMENT_DONE: {
+                    int idDistributor = Integer.parseInt(getParameterFromInteraction(theInteraction, Car.DISTRIBUTOR_CODE));
+                    fed.paymentDone(idDistributor);
                     break;
                 }
             }

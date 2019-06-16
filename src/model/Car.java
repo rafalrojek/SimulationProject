@@ -6,11 +6,18 @@ public class Car {
     public static final String GAS = "GAS";
     public static final String PETROL = "PETROL";
 
-    private int idCar;
+    public static final String DISTRIBUTOR_CODE = "D";
+    public static final String CASH_CODE = "M";
+    public static final String WASH_CODE = "W";
+    public static final String CAR_CODE = "C";
+    public static final String TANKS_CODE = "T";
+
+
+    private int idCar = -1;
     private String tanks;
     private boolean washing;
-    private int distributorId;
-    private int cashBox;
+    private int distributorId = -1;
+    private int cashBox = -1;
 
     public int getIdCar() {
         return idCar;

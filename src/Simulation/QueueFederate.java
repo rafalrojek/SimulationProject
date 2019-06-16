@@ -72,58 +72,58 @@ public class QueueFederate extends EventDrivenFederate  {
 
         //car id, common for all interactions
         int classHandle = rtiamb.getInteractionClassHandle(interaction);
-        byte[] carId = EncodingHelpers.encodeString( (car.getIdCar())+"" );
+        byte[] carId = EncodingHelpers.encodeString(Car.CAR_CODE + car.getIdCar());
         int idCarHandle = rtiamb.getParameterHandle( "idCar", classHandle );
         parameters.add(idCarHandle, carId );
 
         byte[] tanks,wash,dispenser,cash;
-        int idTanksHandle,idWashHandle,idDispenser,idCash;
+        int idTanksHandle,idWashHandle,idDispenserHandle,idCash;
 
         switch(interactionType){
             case Interaction.NEW_CAR_AT_DISPENSER_QUEUE :
-                tanks = EncodingHelpers.encodeString( (car.getTanks()));
+                tanks = EncodingHelpers.encodeString(Car.TANKS_CODE + car.getTanks());
                         idTanksHandle = rtiamb.getParameterHandle( "tanks", classHandle );
                 parameters.add(idTanksHandle, tanks );
 
-                wash = EncodingHelpers.encodeString( (car.isWashing() + ""));
+                wash = EncodingHelpers.encodeString(Car.WASH_CODE + car.isWashing());
                 idWashHandle = rtiamb.getParameterHandle( "washing", classHandle );
                 parameters.add(idWashHandle, wash);
                 break;
 
             case Interaction.OCCUPY_DISPENSER :
-                tanks = EncodingHelpers.encodeString( (car.getTanks()));
+                tanks = EncodingHelpers.encodeString(Car.TANKS_CODE + car.getTanks());
                 idTanksHandle = rtiamb.getParameterHandle( "tanks", classHandle );
                 parameters.add(idTanksHandle, tanks );
 
-                wash = EncodingHelpers.encodeString( (car.isWashing() + ""));
+                wash = EncodingHelpers.encodeString(Car.WASH_CODE + car.isWashing());
                 idWashHandle = rtiamb.getParameterHandle( "washing", classHandle );
                 parameters.add(idWashHandle, wash);
 
-                dispenser = EncodingHelpers.encodeString( (car.isWashing() + ""));
-                idDispenser = rtiamb.getParameterHandle( "idDispenser", classHandle );
-                parameters.add(idDispenser, dispenser);
+                dispenser = EncodingHelpers.encodeString(Car.DISTRIBUTOR_CODE + car.getDistributorId());
+                idDispenserHandle = rtiamb.getParameterHandle( "idDispenser", classHandle );
+                parameters.add(idDispenserHandle, dispenser);
                 break;
 
             case Interaction.NEW_CAR_AT_CASH_BOX_QUEUE :
-                wash = EncodingHelpers.encodeString( (car.isWashing() + ""));
+                wash = EncodingHelpers.encodeString(Car.WASH_CODE + car.isWashing());
                 idWashHandle = rtiamb.getParameterHandle( "washing", classHandle );
                 parameters.add(idWashHandle, wash);
 
-                dispenser = EncodingHelpers.encodeString( (car.isWashing() + ""));
-                idDispenser = rtiamb.getParameterHandle( "idDispenser", classHandle );
-                parameters.add(idDispenser, dispenser);
+                dispenser = EncodingHelpers.encodeString(Car.DISTRIBUTOR_CODE + car.getDistributorId());
+                idDispenserHandle = rtiamb.getParameterHandle( "idDispenser", classHandle );
+                parameters.add(idDispenserHandle, dispenser);
                 break;
 
             case Interaction.OCCUPY_CASH_BOX :
-                wash = EncodingHelpers.encodeString( (car.isWashing() + ""));
+                wash = EncodingHelpers.encodeString(Car.WASH_CODE + car.isWashing());
                 idWashHandle = rtiamb.getParameterHandle( "washing", classHandle );
                 parameters.add(idWashHandle, wash);
 
-                dispenser = EncodingHelpers.encodeString( (car.isWashing() + ""));
-                idDispenser = rtiamb.getParameterHandle( "idDispenser", classHandle );
-                parameters.add(idDispenser, dispenser);
+                dispenser = EncodingHelpers.encodeString(Car.DISTRIBUTOR_CODE + car.getDistributorId());
+                idDispenserHandle = rtiamb.getParameterHandle( "idDispenser", classHandle );
+                parameters.add(idDispenserHandle, dispenser);
 
-                cash = EncodingHelpers.encodeString( (car.isWashing() + ""));
+                cash = EncodingHelpers.encodeString(Car.CASH_CODE + car.getCashBox());
                 idCash = rtiamb.getParameterHandle( "idCash", classHandle );
                 parameters.add(idCash, cash);
                 break;
@@ -147,7 +147,6 @@ public class QueueFederate extends EventDrivenFederate  {
         car.setTanks(tanks);
         distributorQueue.add(car);
         sendInteraction(car,Interaction.NEW_CAR_AT_DISPENSER_QUEUE);
-        //log("Wysłano do kolejki: " + carId);
     }
 
     public void distributorAvailable(int distributorId) throws RTIexception {
@@ -163,14 +162,16 @@ public class QueueFederate extends EventDrivenFederate  {
         car.setIdCar(carId);
         car.setWashing(washing);
         car.setDistributorId(distributorId);
-        distributorQueue.add(car);
+        cashQueue.add(car);
         sendInteraction(car,Interaction.NEW_CAR_AT_CASH_BOX_QUEUE);
     }
 
     public void cashBoxAvailable(int cashId) throws RTIexception {
         if(!cashQueue.isEmpty()){
-            Car car = distributorQueue.poll();
+            Car car = cashQueue.poll();
+            log(car.toString());
             car.setCashBox(cashId);
+            log(car.toString());
             sendInteraction(car,Interaction.OCCUPY_CASH_BOX);
         }
     }
@@ -192,7 +193,7 @@ public class QueueFederate extends EventDrivenFederate  {
 
     public void carWashAvailable() throws RTIexception {
         if(!washQueue.isEmpty()){
-            Car car = distributorQueue.poll();
+            Car car = washQueue.poll();
             sendInteraction(car,Interaction.CAR_WASH_OCCUPIED);
         }
     }

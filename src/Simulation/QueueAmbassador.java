@@ -2,6 +2,7 @@ package Simulation;
 
 import hla.rti.*;
 import hla.rti.jlc.EncodingHelpers;
+import model.Car;
 import model.Interaction;
 
 public class QueueAmbassador extends Ambassador {
@@ -21,45 +22,48 @@ public class QueueAmbassador extends Ambassador {
             QueueFederate fed = (QueueFederate) federate;
             String interactionName = federate.rtiamb.getInteractionClassName(interactionClass);
             log("Received interactioin : " + interactionName);
-            for (int i = 0; i < theInteraction.size(); i++) {
-                log("interakcja[" + i + "] : " + EncodingHelpers.decodeString(theInteraction.getValue(i)));
-            }
 
             switch(interactionName) {
                 case Interaction.NEW_CAR_APPEARED : {
-                    log("New car at dispenser queue.");
-                    String oil = EncodingHelpers.decodeString(theInteraction.getValue(0));
-                    boolean isWashing = Boolean.parseBoolean(EncodingHelpers.decodeString(theInteraction.getValue(1)));
-                    int idCar = Integer.parseInt(EncodingHelpers.decodeString(theInteraction.getValue(2)));
+                    String oil = getParameterFromInteraction(theInteraction, Car.TANKS_CODE);
+                    boolean isWashing = Boolean.parseBoolean(getParameterFromInteraction(theInteraction, Car.WASH_CODE));
+                    int idCar = Integer.parseInt(getParameterFromInteraction(theInteraction, Car.CAR_CODE));
                     fed.newCarAppeared(idCar,oil,isWashing);
                     break;
                 }
                 case Interaction.DISPENSER_AVAILABLE : {
-                    int idDistributor = Integer.parseInt(EncodingHelpers.decodeString(theInteraction.getValue(0)));
+                    int idDistributor = Integer.parseInt(getParameterFromInteraction(theInteraction, Car.DISTRIBUTOR_CODE));
                     fed.distributorAvailable(idDistributor);
+                    break;
                 }
                 case Interaction.PUMPING_ENDED : {
-                    int idDistributor = Integer.parseInt(EncodingHelpers.decodeString(theInteraction.getValue(0)));
-                    int idCar = Integer.parseInt(EncodingHelpers.decodeString(theInteraction.getValue(1)));
-                    boolean isWashing = Boolean.parseBoolean(EncodingHelpers.decodeString(theInteraction.getValue(2)));
+                    int idDistributor = Integer.parseInt(getParameterFromInteraction(theInteraction, Car.DISTRIBUTOR_CODE));
+                    int idCar = Integer.parseInt(getParameterFromInteraction(theInteraction, Car.CAR_CODE));
+                    boolean isWashing = Boolean.parseBoolean(getParameterFromInteraction(theInteraction, Car.WASH_CODE));
                     fed.pumpingEnded(idDistributor,idCar,isWashing);
+                    break;
                 }
                 case Interaction.CASH_BOX_AVAILABLE : {
-                    int idCash = Integer.parseInt(EncodingHelpers.decodeString(theInteraction.getValue(0)));
+                    int idCash = Integer.parseInt(getParameterFromInteraction(theInteraction, Car.CASH_CODE));
+                    log("Available cash: " + idCash);
                     fed.cashBoxAvailable(idCash);
+                    break;
                 }
                 case Interaction.PAYMENT_DONE : {
-                    int idCar = Integer.parseInt(EncodingHelpers.decodeString(theInteraction.getValue(0)));
-                    int idCash = Integer.parseInt(EncodingHelpers.decodeString(theInteraction.getValue(1)));
-                    int idDistributor = Integer.parseInt(EncodingHelpers.decodeString(theInteraction.getValue(2)));
-                    boolean isWashing = Boolean.parseBoolean(EncodingHelpers.decodeString(theInteraction.getValue(3)));
+                    int idCar = Integer.parseInt(getParameterFromInteraction(theInteraction, Car.CAR_CODE));
+                    int idCash = Integer.parseInt(getParameterFromInteraction(theInteraction, Car.CASH_CODE));
+                    int idDistributor = Integer.parseInt(getParameterFromInteraction(theInteraction, Car.DISTRIBUTOR_CODE));
+                    boolean isWashing = Boolean.parseBoolean(getParameterFromInteraction(theInteraction, Car.WASH_CODE));
                     fed.paymentDone(idCar,idCash,idDistributor,isWashing);
+                    break;
                 }
                 case Interaction.CAR_WASH_RELEASED :
                 case Interaction.CAR_WASH_AVAILABLE : {
                     fed.carWashAvailable();
                 }
             }
+        } catch (InteractionClassNotDefined | RTIinternalError | FederateNotExecutionMember | ArrayIndexOutOfBounds interactionClassNotDefined) {
+            interactionClassNotDefined.printStackTrace();
         } catch (RTIexception rtIexception) {
             rtIexception.printStackTrace();
         }

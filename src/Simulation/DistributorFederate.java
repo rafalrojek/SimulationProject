@@ -1,6 +1,5 @@
 package Simulation;
 
-import hla.rti.LogicalTime;
 import hla.rti.RTIambassador;
 import hla.rti.RTIexception;
 import hla.rti.SuppliedParameters;
@@ -9,13 +8,10 @@ import hla.rti.jlc.RtiFactoryFactory;
 import model.Car;
 import model.Interaction;
 
-import java.util.LinkedList;
-import java.util.List;
-
 public class DistributorFederate extends EventDrivenFederate {
 
-    private static final int numberOfDistributors = 4;
-    private static final int timeOfPumping = 10;
+    private final int numberOfDistributors = 4;
+    private final int timeOfPumping = 10;
 
     private Car[] distributors;
 
@@ -35,16 +31,16 @@ public class DistributorFederate extends EventDrivenFederate {
     //----------------------------------------------------------
 
     @Override
-    protected void setAmbassador() { fedamb = new DistributorAmabasssador(this); }
+    protected void setAmbassador() { fedamb = new DistributorAmabassador(this); }
 
 
-    private void sendInteraction(Car car) throws RTIexception
+    private void registerPumpingEndedInteraction(Car car) throws RTIexception
     {
         SuppliedParameters parameters = RtiFactoryFactory.getRtiFactory().createSuppliedParameters();
 
-        byte[] carId = EncodingHelpers.encodeString( (car.getIdCar())+"" );
-        byte[] idDispenser = EncodingHelpers.encodeString( (car.getDistributorId()+""));
-        byte[] wash = EncodingHelpers.encodeString( (car.isWashing() + ""));
+        byte[] carVal = EncodingHelpers.encodeString(Car.CAR_CODE + car.getIdCar());
+        byte[] dispenserVal = EncodingHelpers.encodeString(Car.DISTRIBUTOR_CODE + car.getDistributorId());
+        byte[] washVal = EncodingHelpers.encodeString(Car.WASH_CODE + car.isWashing());
 
         int classHandle = rtiamb.getInteractionClassHandle(Interaction.PUMPING_ENDED);
         int idDispenserHandle = rtiamb.getParameterHandle( "idDispenser", classHandle );
@@ -52,18 +48,18 @@ public class DistributorFederate extends EventDrivenFederate {
         int idWashHandle = rtiamb.getParameterHandle( "washing", classHandle );
 
         // put the values into the collection
-        parameters.add(idDispenserHandle, idDispenser );
-        parameters.add(idCarHandle, carId );
-        parameters.add(idWashHandle, wash);
+        parameters.add(idDispenserHandle, dispenserVal );
+        parameters.add(idCarHandle, carVal );
+        parameters.add(idWashHandle, washVal);
 
         log("Sending interaction: " + Interaction.PUMPING_ENDED);
-        addInteraction(new Interaction(parameters, classHandle, generateTag()));
+        addInteraction(new Interaction(parameters, classHandle, generateTag(), getTimeOfPumping()));
     }
 
-    private void sendInteraction(int dispenserId) throws RTIexception{
+    private void registerDispenserAvailableInteraction(int dispenserId) throws RTIexception{
         SuppliedParameters parameters = RtiFactoryFactory.getRtiFactory().createSuppliedParameters();
 
-        byte[] idDispenser = EncodingHelpers.encodeString( dispenserId+"");
+        byte[] idDispenser = EncodingHelpers.encodeString(Car.DISTRIBUTOR_CODE + dispenserId);
         int classHandle = rtiamb.getInteractionClassHandle(Interaction.DISPENSER_AVAILABLE);
         int idDispenserHandle = rtiamb.getParameterHandle( "idDispenser", classHandle );
         parameters.add(idDispenserHandle, idDispenser );
@@ -83,7 +79,7 @@ public class DistributorFederate extends EventDrivenFederate {
     public void newCarAtDispenserQueue(int carId, String fuel, boolean washing) throws RTIexception {
         int freeDispenser = isAnyDispenserFree();
         if(freeDispenser != -1){
-            sendInteraction(freeDispenser);
+            registerDispenserAvailableInteraction(freeDispenser);
         }
     }
 
@@ -94,10 +90,7 @@ public class DistributorFederate extends EventDrivenFederate {
         car.setIdCar(carId);
         car.setTanks(tank);
         distributors[distributorId] = car;
-        for (int i = 0; i < timeOfPumping; i++) {
-            advanceTime(1.0);
-        }
-        sendInteraction(distributors[distributorId]);
+        registerPumpingEndedInteraction(distributors[distributorId]);
     }
 
     public void paymentDone(int distributorId){
@@ -112,5 +105,9 @@ public class DistributorFederate extends EventDrivenFederate {
         rtiamb.subscribeInteractionClass(rtiamb.getInteractionClassHandle(Interaction.NEW_CAR_AT_DISPENSER_QUEUE));
         rtiamb.subscribeInteractionClass(rtiamb.getInteractionClassHandle(Interaction.OCCUPY_DISPENSER));
         rtiamb.subscribeInteractionClass(rtiamb.getInteractionClassHandle(Interaction.PAYMENT_DONE));
+    }
+
+    public int getTimeOfPumping() {
+        return timeOfPumping;
     }
 }

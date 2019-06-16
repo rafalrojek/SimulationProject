@@ -27,11 +27,19 @@ public class Interaction {
     private int classHandle;
     private byte[] tag;
     private LogicalTime time;
+    private Integer serviceTimeUpperBound;
 
     public Interaction(SuppliedParameters params, int classHandle, byte[] tag){
         this.params = params;
         this.classHandle = classHandle;
         this.tag = tag;
+    }
+
+    public Interaction(SuppliedParameters params, int classHandle, byte[] tag, Integer serviceTime) {
+        this.params = params;
+        this.classHandle = classHandle;
+        this.tag = tag;
+        serviceTimeUpperBound = serviceTime;
     }
 
     public void setTime(LogicalTime time) {
@@ -62,5 +70,9 @@ public class Interaction {
 
     public LogicalTime getTime() {
         return time;
+    }
+
+    public Integer getServiceTimeUpperBound() {
+        return serviceTimeUpperBound;
     }
 }

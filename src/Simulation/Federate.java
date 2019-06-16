@@ -31,6 +31,7 @@ public abstract class Federate implements Runnable{
     protected String federationName;
     protected List<Interaction> interactions = new LinkedList<>();
 
+
     //----------------------------------------------------------
     //                    INSTANCE METHODS
     //----------------------------------------------------------
@@ -246,6 +247,10 @@ public abstract class Federate implements Runnable{
         // wait for the time advance to be granted. ticking will tell the
         // LRC to start delivering callbacks to the federate
         while( fedamb.isAdvancing ) rtiamb.tick();
+    }
+
+    protected void addInteraction(Interaction interaction){
+        interactions.add(interaction);
     }
 
     @Override

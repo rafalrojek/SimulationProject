@@ -1,12 +1,15 @@
 package Simulation;
 
+import hla.rti.LogicalTime;
 import hla.rti.RTIexception;
 import model.Interaction;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 
 public abstract class EventDrivenFederate extends Federate {
+    Random random = new Random();
     @Override
     protected void runFederateLogic() throws RTIexception {
         while(!endOfSimulation) {
@@ -15,8 +18,7 @@ public abstract class EventDrivenFederate extends Federate {
                 List<Interaction> interactionsToDelete = new LinkedList<>();
                 for (int i = 0; i < interactions.size(); i++) {
                     Interaction interaction = interactions.get(i);
-                    log(interaction.toString());
-                    interaction.setTime(convertTime(fedamb.federateTime + fedamb.federateLookahead));
+                    interaction.setTime(setTime(interaction.getServiceTimeUpperBound()));
                     rtiamb.sendInteraction(interaction.getClassHandle(), interaction.getParams(), interaction.getTag(), interaction.getTime());
                     interactionsToDelete.add(interaction);
                 }
@@ -25,7 +27,12 @@ public abstract class EventDrivenFederate extends Federate {
         }
     }
 
-    protected void addInteraction(Interaction interaction){
-        interactions.add(interaction);
+    private LogicalTime setTime(Integer serviceTimeUpperBound){
+        int serviceTime = 0;
+        int minTimeOfService = 4;
+        if(serviceTimeUpperBound != null){
+            serviceTime = random.nextInt((serviceTimeUpperBound - minTimeOfService) + 1) + minTimeOfService;
+        }
+        return convertTime(fedamb.federateTime + fedamb.federateLookahead + serviceTime);
     }
 }

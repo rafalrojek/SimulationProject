@@ -142,4 +142,12 @@ public abstract class Ambassador extends NullFederateAmbassador {
                                       EventRetractionHandle retractionHandle ) {
         log( "Object Removed: handle=" + theObject );
     }
+
+    protected String getParameterFromInteraction(ReceivedInteraction theInteraction, String paramCode) throws ArrayIndexOutOfBounds {
+        for (int i = 0; i < theInteraction.size(); i++) {
+            String encodedParam = EncodingHelpers.decodeString(theInteraction.getValue(i));
+            if(encodedParam.substring(0,1).equals(paramCode)) return encodedParam.substring(1);
+        }
+        throw new RuntimeException("Wrong Code passed. Such Param doesnt exist in this interaction");
+    }
 }
